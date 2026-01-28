@@ -220,11 +220,11 @@
             }
         };
 
-        // 2. LOGIKA LOGIN (Sama seperti sebelumnya, tapi pakai data dinamis)
+        // 2. LOGIKA LOGIN
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault(); 
             
-            const inputUser = document.getElementById('username').value.trim(); // Hapus spasi gak sengaja
+            const inputUser = document.getElementById('username').value.trim();
             const inputPass = document.getElementById('password').value;
             const errorMsg = document.getElementById('error-msg');
 
@@ -234,27 +234,52 @@
                 return;
             }
 
-            // PENTING: Sesuaikan nama key dengan yang dikirim Code.gs 
-            // (Code.gs mengirim: username & password, bukan user & pass)
+            // Cari user di database
             const guruDitemukan = databaseGuru.find(g => 
-                g.username.toLowerCase() === inputUser.toLowerCase() && // Username tidak case-sensitive
-                String(g.password) === String(inputPass) // Password harus sama persis (case-sensitive)
+                g.username.toLowerCase() === inputUser.toLowerCase() && 
+                String(g.password) === String(inputPass)
             );
 
             if (guruDitemukan) {
-                // SUKSES
+                // --- SUKSES LOGIN ---
                 localStorage.setItem('namaGuru', guruDitemukan.nama);
                 
                 // Animasi tombol sukses
                 btnLogin.innerHTML = "Berhasil Masuk...";
                 btnLogin.style.background = "linear-gradient(to right, #11998e, #38ef7d)";
+
+                // ============================================================
+                // SETTING PEMISAHAN DASHBOARD DI SINI
+                // ============================================================
                 
+                // 1. Tentukan halaman tujuan default (untuk guru biasa)
+                let halamanTujuan = 'dashboard.html';
+
+                // 2. Masukkan username milik Kepsek di sini (harus sama persis dengan di excel/database)
+                // Contoh: const usernameKepsek = "19850128"; atau "kepsek_alkautsar"
+                const usernameKepsek = "kepsek"; 
+
+                // 3. Cek apakah yang login adalah Kepsek?
+                if (guruDitemukan.username.toLowerCase() === usernameKepsek.toLowerCase()) {
+                    halamanTujuan = 'dashboardkepsek.html'; // Alihkan ke dashboard khusus
+                }
+
+                // ============================================================
+
                 // Redirect setelah 1 detik
                 setTimeout(() => {
-                    window.location.href = 'dashboard.html';
+                    window.location.href = halamanTujuan;
                 }, 1000);
 
             } else {
+                
+                // --- GAGAL LOGIN ---
+                errorMsg.style.display = 'block';
+                document.querySelector('.login-container').style.animation = "shake 0.5s";
+                setTimeout(() => { document.querySelector('.login-container').style.animation = "none"; }, 500);
+            }
+        });
+                
                 // GAGAL
                 errorMsg.style.display = 'block';
                 document.querySelector('.login-container').style.animation = "shake 0.5s";
@@ -266,5 +291,6 @@
 </body>
 
 </html>
+
 
 
