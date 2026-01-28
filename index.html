@@ -220,45 +220,61 @@
             }
         };
 
-        // 2. LOGIKA LOGIN (Sama seperti sebelumnya, tapi pakai data dinamis)
+        // LOGIKA LOGIN DENGAN PEMISAHAN KEPSEK & GURU
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault(); 
             
-            const inputUser = document.getElementById('username').value.trim(); // Hapus spasi gak sengaja
+            const inputUser = document.getElementById('username').value.trim();
             const inputPass = document.getElementById('password').value;
             const errorMsg = document.getElementById('error-msg');
 
-            // Cek apakah data sudah terdownload
+            // 1. Cek apakah data sudah dimuat
             if (databaseGuru.length === 0) {
-                alert("Data guru belum selesai dimuat. Tunggu sebentar...");
+                alert("Data guru belum siap. Tunggu sebentar...");
                 return;
             }
 
-            // PENTING: Sesuaikan nama key dengan yang dikirim Code.gs 
-            // (Code.gs mengirim: username & password, bukan user & pass)
+            // 2. Cari user yang cocok
             const guruDitemukan = databaseGuru.find(g => 
-                g.username.toLowerCase() === inputUser.toLowerCase() && // Username tidak case-sensitive
-                String(g.password) === String(inputPass) // Password harus sama persis (case-sensitive)
+                g.username.toLowerCase() === inputUser.toLowerCase() && 
+                String(g.password) === String(inputPass)
             );
 
             if (guruDitemukan) {
-                // SUKSES
-                localStorage.setItem('namaGuru', guruDitemukan.nama);
+                // --- JIKA LOGIN BERHASIL ---
                 
-                // Animasi tombol sukses
-                btnLogin.innerHTML = "Berhasil Masuk...";
-                btnLogin.style.background = "linear-gradient(to right, #11998e, #38ef7d)";
+                // Simpan Nama & Jabatan ke LocalStorage (biar bisa dipanggil di dashboard)
+                localStorage.setItem('namaUser', guruDitemukan.nama);
+                localStorage.setItem('jabatanUser', guruDitemukan.jabatan);
+
+                // Ubah tampilan tombol
+                btnLogin.innerHTML = "Login Sukses...";
+                btnLogin.style.background = "linear-gradient(to right, #11998e, #38ef7d)"; // Warna hijau
                 
-                // Redirect setelah 1 detik
+                // --- LOGIKA PENGARAHAN HALAMAN (REDIRECT) ---
                 setTimeout(() => {
-                    window.location.href = 'dashboard.html';
+                    // Ambil jabatan dari database
+                    // Kita ubah ke huruf kecil semua biar "Kepala Sekolah" atau "kepala sekolah" terbaca sama
+                    let jabatan = (guruDitemukan.jabatan || "").toLowerCase();
+
+                    // Cek: Jika jabatan mengandung kata "kepala", lempar ke dashboard kepsek
+                    if (jabatan.includes("kepala")) {
+                        window.location.href = 'dashboardkepsek.html';
+                    } 
+                    // Jika jabatan "guru", "tu", atau "satpam", lempar ke dashboard biasa
+                    else {
+                        window.location.href = 'dashboard.html';
+                    }
                 }, 1000);
 
             } else {
-                // GAGAL
+                // --- JIKA LOGIN GAGAL ---
                 errorMsg.style.display = 'block';
-                document.querySelector('.login-container').style.animation = "shake 0.5s";
-                setTimeout(() => { document.querySelector('.login-container').style.animation = "none"; }, 500);
+                
+                // Efek getar
+                const container = document.querySelector('.login-container');
+                container.style.animation = "shake 0.5s";
+                setTimeout(() => { container.style.animation = "none"; }, 500);
             }
         });
     </script>
@@ -266,4 +282,5 @@
 </body>
 
 </html>
+
 
