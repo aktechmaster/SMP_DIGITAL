@@ -511,7 +511,7 @@
             <p>Cek jadwal KBM Anda hari ini.</p>
         </div>
             
-            <div class="menu-card" onclick="cekAksesAbsensi()">
+            <div id="menu-absensi-siswa" class="menu-card" style="display: none;" onclick="cekAksesAbsensi()">
                 <h3>📝 Absensi Siswa</h3>
                 <p>Rekap kehadiran siswa.</p>
             </div>
@@ -1093,6 +1093,24 @@ function updateHeaderDashboard() {
     }
 
     // ==========================================
+    // --- LOGIKA MENU ABSENSI SISWA (KHUSUS WALI KELAS) ---
+    // ==========================================
+    
+    const tombolAbsensiSiswa = document.getElementById('menu-absensi-siswa');
+
+    if (tombolAbsensiSiswa) {
+        // Kita gunakan 'stringCekJabatan' yang sama.
+        // Logikanya: Jika jabatan mengandung kata "WALI KELAS", maka tampilkan.
+        // (Ini otomatis mencakup "WALI KELAS" dan "WAKIL WALI KELAS")
+        
+        if (stringCekJabatan.includes("WALI KELAS")) {
+            tombolAbsensiSiswa.style.display = "block";
+        } else {
+            tombolAbsensiSiswa.style.display = "none";
+        }
+    }
+
+    // ==========================================
     // --- LOGIKA OTOMATIS MENU T2Q ---
     // ==========================================
 
@@ -1547,6 +1565,7 @@ function prosesUbahPassword() {
 </body>
 
 </html>
+
 
 
 
