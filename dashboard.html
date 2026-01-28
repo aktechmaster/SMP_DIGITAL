@@ -126,14 +126,18 @@
         overflow: hidden;    /* Menjaga agar isi tidak keluar kotak */
     }
 
-    /* SESUDAH (Lebih Cerah) */
-.welcome-card::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-    /* Ubah 0.85 menjadi angka yang lebih kecil. Semakin kecil semakin cerah.
-       Coba 0.45 atau 0.5 */
-    background: rgba(15, 32, 39, 0.45); 
-    z-index: 1;
-}
+    /* OPSIONAL: Efek hiasan lingkaran samar agar lebih "Tech" */
+    .welcome-card::before {
+        content: '';
+        position: absolute;
+        top: -50px;
+        right: -50px;
+        width: 150px;
+        height: 150px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        pointer-events: none;
+    }
 
         .welcome-content { position: relative; z-index: 2; }
         
@@ -1501,11 +1505,3 @@ function prosesUbahPassword() {
 </body>
 
 </html>
-
-
-
-
-
-
-
-
