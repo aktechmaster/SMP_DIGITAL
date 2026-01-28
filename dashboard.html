@@ -516,6 +516,22 @@
                 <p>Klik untuk input laporan Bina Pribadi Islam.</p>
             </div>
 
+            <div id="menu-absensi-karyawan" class="menu-card" style="display: none;" onclick="window.open('MASUKKAN_LINK_ABSENSI_DISINI')">
+                <div class="icon-container" style="background: #e0f2f1; color: #009688;">
+                    <i class="fas fa-user-clock"></i>
+                </div>
+                <h3>📋 Absensi Karyawan</h3>
+                <p>Khusus Waka Kurikulum.</p>
+            </div>
+
+            <div id="menu-notulen-rapat" class="menu-card" style="display: none;" onclick="window.open('MASUKKAN_LINK_NOTULEN_DISINI')">
+                <div class="icon-container" style="background: #fff3e0; color: #ff9800;">
+                    <i class="fas fa-file-signature"></i>
+                </div>
+                <h3>📝 Notulen Rapat</h3>
+                <p>Khusus Waka Humas.</p>
+            </div>
+
         </div>
     </div>
 
@@ -992,6 +1008,37 @@ function updateHeaderDashboard() {
     }
 
     // ==========================================
+    // --- LOGIKA MENU KHUSUS WAKA ---
+    // ==========================================
+    
+    // Definisi tombol (ambil ID dari HTML yang baru dibuat)
+    const tombolAbsenKaryawan = document.getElementById('menu-absensi-karyawan');
+    const tombolNotulen = document.getElementById('menu-notulen-rapat');
+
+    // Kita gunakan variabel 'cekDataGuru' yang sudah ada logic-nya di bawah
+    // Tapi karena variabel 'cekDataGuru' didefinisikan sedikit ke bawah di kode asli Anda, 
+    // Kita buat ulang string pengecekannya di sini agar aman:
+    let stringCekJabatan = (bio.jabatan + " " + bio.tugasTambahan).toUpperCase();
+
+    // 1. Cek Waka Kurikulum
+    if (tombolAbsenKaryawan) {
+        if (stringCekJabatan.includes("KURIKULUM")) {
+            tombolAbsenKaryawan.style.display = "block";
+        } else {
+            tombolAbsenKaryawan.style.display = "none";
+        }
+    }
+
+    // 2. Cek Waka Humas
+    if (tombolNotulen) {
+        if (stringCekJabatan.includes("HUMAS")) {
+            tombolNotulen.style.display = "block";
+        } else {
+            tombolNotulen.style.display = "none";
+        }
+    }
+
+    // ==========================================
     // --- LOGIKA OTOMATIS MENU T2Q ---
     // ==========================================
 
@@ -1446,6 +1493,7 @@ function prosesUbahPassword() {
 </body>
 
 </html>
+
 
 
 
