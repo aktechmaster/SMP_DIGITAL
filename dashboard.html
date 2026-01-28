@@ -108,25 +108,36 @@
             margin: 0 auto;
         }
 
-        /* Welcome Card */
-        .welcome-card {
-            background: white;
-            border-radius: 15px;
-            padding: 40px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            background-image: url('https://img.freepik.com/free-vector/abstract-blue-geometric-shapes-background_1035-17545.jpg');
-            background-size: cover;
-            background-position: center;
-            position: relative;
-            color: white;
-            overflow: hidden;
-            margin-bottom: 30px;
-        }
-        
-        .welcome-card::before {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(15, 32, 39, 0.85); z-index: 1;
-        }
+        /* Welcome Card - Green Version */
+.welcome-card {
+    background: white;
+    border-radius: 15px;
+    padding: 40px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    /* Gambar latar belakang tetap sama */
+    background-image: url('https://img.freepik.com/free-vector/abstract-blue-geometric-shapes-background_1035-17545.jpg');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    color: white;
+    overflow: hidden;
+    margin-bottom: 30px;
+}
+
+.welcome-card::before {
+    content: ''; 
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    right: 0; 
+    bottom: 0;
+    /* PERUBAHAN DI SINI: */
+    /* Mengubah overlay gelap menjadi Gradasi Hijau Cerah */
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.9), rgba(52, 211, 153, 0.9));
+    /* Opsi tambahan: mix-blend-mode membantu menyatukan warna hijau dengan tekstur gambar asli */
+    mix-blend-mode: multiply; 
+    z-index: 1;
+}
 
         .welcome-content { position: relative; z-index: 2; }
         
@@ -1494,3 +1505,4 @@ function prosesUbahPassword() {
 </body>
 
 </html>
+
