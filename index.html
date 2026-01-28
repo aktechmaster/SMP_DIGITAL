@@ -182,8 +182,10 @@
         // =======================================================
         // KONFIGURASI PENTING
         // =======================================================
+        // Tempel URL Web App Script Anda di sini (yang berakhiran /exec)
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxjOtLl18ZvhzJnvGYGBiOki7UmjjeinUdFecOtBVqYgY6BrgVvMXgZKHNRouSoJgA2ew/exec"; 
         
+        // Variabel untuk menampung data dari Sheet
         let databaseGuru = []; 
         const btnLogin = document.querySelector('.btn-login');
 
@@ -200,6 +202,7 @@
                 const data = await response.json();
 
                 // Simpan data 'users' dari Code.gs ke variabel lokal
+                // Code.gs mengirim format: { username: "...", password: "...", nama: "..." }
                 if (data.users) {
                     databaseGuru = data.users;
                     console.log("Data Guru Berhasil Dimuat:", databaseGuru.length, "orang");
@@ -217,11 +220,11 @@
             }
         };
 
-        // 2. LOGIKA LOGIN
+        // 2. LOGIKA LOGIN (Sama seperti sebelumnya, tapi pakai data dinamis)
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault(); 
             
-            const inputUser = document.getElementById('username').value.trim();
+            const inputUser = document.getElementById('username').value.trim(); // Hapus spasi gak sengaja
             const inputPass = document.getElementById('password').value;
             const errorMsg = document.getElementById('error-msg');
 
@@ -231,45 +234,28 @@
                 return;
             }
 
-            // Cari user di database
+            // PENTING: Sesuaikan nama key dengan yang dikirim Code.gs 
+            // (Code.gs mengirim: username & password, bukan user & pass)
             const guruDitemukan = databaseGuru.find(g => 
-                g.username.toLowerCase() === inputUser.toLowerCase() && 
-                String(g.password) === String(inputPass)
+                g.username.toLowerCase() === inputUser.toLowerCase() && // Username tidak case-sensitive
+                String(g.password) === String(inputPass) // Password harus sama persis (case-sensitive)
             );
 
             if (guruDitemukan) {
-                // --- SUKSES LOGIN ---
+                // SUKSES
                 localStorage.setItem('namaGuru', guruDitemukan.nama);
                 
                 // Animasi tombol sukses
                 btnLogin.innerHTML = "Berhasil Masuk...";
                 btnLogin.style.background = "linear-gradient(to right, #11998e, #38ef7d)";
-
-                // ============================================================
-                // SETTING PEMISAHAN DASHBOARD
-                // ============================================================
                 
-                // 1. Tentukan halaman tujuan default (untuk guru biasa)
-                let halamanTujuan = 'dashboard.html';
-
-                // 2. Tentukan Username Kepsek
-                // Ganti "kepsek" di bawah ini dengan USERNAME ASLI Kepsek di Spreadsheet
-                const usernameKepsek = "kepsek"; 
-
-                // 3. Cek apakah yang login adalah Kepsek?
-                if (guruDitemukan.username.toLowerCase() === usernameKepsek.toLowerCase()) {
-                    halamanTujuan = 'dashboardkepsek.html'; // Alihkan ke dashboard khusus
-                }
-                // ============================================================
-
                 // Redirect setelah 1 detik
                 setTimeout(() => {
-                    window.location.href = halamanTujuan;
+                    window.location.href = 'dashboard.html';
                 }, 1000);
 
             } else {
-                
-                // --- GAGAL LOGIN ---
+                // GAGAL
                 errorMsg.style.display = 'block';
                 document.querySelector('.login-container').style.animation = "shake 0.5s";
                 setTimeout(() => { document.querySelector('.login-container').style.animation = "none"; }, 500);
@@ -278,4 +264,6 @@
     </script>
 
 </body>
+
 </html>
+
