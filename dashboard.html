@@ -539,6 +539,22 @@
                 <p>Khusus Waka Kurikulum.</p>
             </div>
 
+            <div id="menu-input-piket" class="menu-card" style="display: none;" onclick="window.open('LINK_GOOGLE_FORM_INPUT_PIKET_DISINI')">
+                <div class="icon-container" style="background: #ede7f6; color: #673ab7;">
+                    <i class="fas fa-edit"></i>
+                </div>
+                <h3>✍️ Input Piket</h3>
+                <p>Khusus Waka Kurikulum & PMA.</p>
+            </div>
+
+            <div id="menu-laporan-piket" class="menu-card" style="display: none;" onclick="window.open('LINK_SPREADSHEET_LAPORAN_PIKET_DISINI')">
+                <div class="icon-container" style="background: #ede7f6; color: #673ab7;">
+                    <i class="fas fa-clipboard-list"></i>
+                </div>
+                <h3>📊 Laporan Piket</h3>
+                <p>Rekap data piket harian.</p>
+            </div>
+
             <div id="menu-notulen-rapat" class="menu-card" style="display: none;" onclick="window.open('https://aktechmaster.github.io/Notulen-Rapat-SMP-IT-Al-Kautsar/')">
                 <div class="icon-container" style="background: #fff3e0; color: #ff9800;">
                     <i class="fas fa-file-signature"></i>
@@ -1054,6 +1070,29 @@ function updateHeaderDashboard() {
     }
 
     // ==========================================
+    // --- LOGIKA MENU KHUSUS PIKET (WAKA KURIKULUM & PMA) ---
+    // ==========================================
+    
+    // 1. Ambil Elemen Menu Baru
+    const tombolInputPiket = document.getElementById('menu-input-piket');
+    const tombolLaporanPiket = document.getElementById('menu-laporan-piket');
+
+    // 2. Cek Jabatan (Waka Kurikulum ATAU PMA)
+    // Variabel 'stringCekJabatan' sudah didefinisikan di kode sebelumnya (baris atas fungsi ini)
+    // Jadi kita tinggal pakai saja.
+    
+    if (tombolInputPiket && tombolLaporanPiket) {
+        // Cek apakah string jabatan mengandung kata "KURIKULUM" atau "PMA"
+        if (stringCekJabatan.includes("KURIKULUM") || stringCekJabatan.includes("PMA")) {
+            tombolInputPiket.style.display = "block";
+            tombolLaporanPiket.style.display = "block";
+        } else {
+            tombolInputPiket.style.display = "none";
+            tombolLaporanPiket.style.display = "none";
+        }
+    }
+
+    // ==========================================
     // --- LOGIKA OTOMATIS MENU T2Q ---
     // ==========================================
 
@@ -1508,5 +1547,6 @@ function prosesUbahPassword() {
 </body>
 
 </html>
+
 
 
