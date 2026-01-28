@@ -7,16 +7,18 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary-orange: #FF8C00;
-            --secondary-orange: #FF4500;
-            --tech-bg: #f0f2f5;
-            --card-bg: #ffffff;
-            --text-dark: #333;
-            --text-light: #fff;
-            --gradient: linear-gradient(135deg, var(--primary-orange), var(--secondary-orange));
-            --shadow: 0 4px 6px rgba(0,0,0,0.1);
-            --hover-shadow: 0 10px 15px rgba(255, 69, 0, 0.2);
-        }
+    /* Warna Utama yang Anda minta */
+    --primary-orange: #ff7f00;
+    
+    /* Warna pendukung untuk gradient (sedikit lebih gelap/kemerahan agar elegan) */
+    --secondary-orange: #e65100; 
+    
+    /* Membuat Gradient yang halus */
+    --gradient: linear-gradient(135deg, var(--primary-orange) 0%, var(--secondary-orange) 100%);
+    
+    /* Shadow dengan nuansa oranye agar terlihat "glowing" */
+    --shadow: 0 10px 30px rgba(255, 127, 0, 0.3);
+}
 
         * {
             margin: 0;
@@ -32,93 +34,107 @@
         }
 
         /* --- Navbar --- */
-        .navbar {
-            background: var(--gradient);
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
+.navbar {
+    background: var(--gradient); /* Menggunakan gradient oranye baru */
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    /* Shadow sedikit oranye agar menyatu */
+    box-shadow: 0 4px 15px rgba(255, 127, 0, 0.2); 
+}
 
-        .navbar-brand {
-            display: flex;
-            align-items: center;
-            font-weight: bold;
-            font-size: 1.1rem;
-        }
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1); /* Sedikit bayangan agar teks pop-up */
+}
 
-        .navbar-brand i {
-            margin-right: 10px;
-            font-size: 1.5rem;
-        }
+.navbar-brand i {
+    margin-right: 10px;
+    font-size: 1.5rem;
+}
 
-        .navbar-date {
-            font-size: 0.9rem;
-            opacity: 0.9;
-        }
+.navbar-date {
+    font-size: 0.9rem;
+    opacity: 0.95; /* Opacity dinaikkan sedikit agar lebih jelas di oranye */
+}
 
-        .menu-toggle {
-            cursor: pointer;
-            font-size: 1.2rem;
-        }
+.menu-toggle {
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: transform 0.2s;
+}
 
-        /* --- Welcome Card --- */
-        .container {
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 0 20px;
-        }
+.menu-toggle:hover {
+    transform: scale(1.1); /* Efek interaktif kecil */
+}
 
-        .welcome-card {
-            background: var(--gradient);
-            border-radius: 15px;
-            padding: 40px;
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: relative;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            margin-bottom: 30px;
-        }
+/* --- Welcome Card --- */
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 20px;
+}
 
-        /* Techno Background Effect */
-        .welcome-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: url('https://www.transparenttextures.com/patterns/cubes.png');
-            opacity: 0.1;
-        }
+.welcome-card {
+    background: var(--gradient);
+    border-radius: 15px;
+    padding: 40px;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow); /* Shadow oranye halus */
+    margin-bottom: 30px;
+}
 
-        .welcome-text h1 {
-            font-size: 1.8rem;
-            margin-bottom: 10px;
-        }
+/* Techno Background Effect */
+.welcome-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    /* Pola kotak-kotak transparan */
+    background: url('https://www.transparenttextures.com/patterns/cubes.png');
+    opacity: 0.15; /* Sedikit lebih terlihat untuk tekstur */
+    mix-blend-mode: overlay; /* Agar menyatu dengan oranye */
+}
 
-        .welcome-text h2 {
-            font-size: 2.2rem;
-            font-weight: 800;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-        }
+.welcome-text h1 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
 
-        .welcome-text p {
-            margin-top: 10px;
-            font-size: 1rem;
-            opacity: 0.9;
-        }
+.welcome-text h2 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    /* Text shadow diperhalus agar tidak kotor di background oranye */
+    text-shadow: 2px 2px 10px rgba(0,0,0,0.15);
+}
 
-        .profile-pic {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            border: 4px solid rgba(255,255,255,0.3);
-            object-fit: cover;
-            z-index: 1;
-        }
+.welcome-text p {
+    margin-top: 10px;
+    font-size: 1rem;
+    opacity: 0.95;
+    font-weight: 500;
+}
+
+.profile-pic {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    /* Border putih semi-transparan agar foto terlihat "clean" */
+    border: 4px solid rgba(255,255,255,0.4); 
+    object-fit: cover;
+    z-index: 1;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
 
         /* --- Dashboard Grid --- */
         .grid-menu {
