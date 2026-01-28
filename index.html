@@ -182,10 +182,8 @@
         // =======================================================
         // KONFIGURASI PENTING
         // =======================================================
-        // Tempel URL Web App Script Anda di sini (yang berakhiran /exec)
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxjOtLl18ZvhzJnvGYGBiOki7UmjjeinUdFecOtBVqYgY6BrgVvMXgZKHNRouSoJgA2ew/exec"; 
         
-        // Variabel untuk menampung data dari Sheet
         let databaseGuru = []; 
         const btnLogin = document.querySelector('.btn-login');
 
@@ -202,7 +200,6 @@
                 const data = await response.json();
 
                 // Simpan data 'users' dari Code.gs ke variabel lokal
-                // Code.gs mengirim format: { username: "...", password: "...", nama: "..." }
                 if (data.users) {
                     databaseGuru = data.users;
                     console.log("Data Guru Berhasil Dimuat:", databaseGuru.length, "orang");
@@ -249,21 +246,20 @@
                 btnLogin.style.background = "linear-gradient(to right, #11998e, #38ef7d)";
 
                 // ============================================================
-                // SETTING PEMISAHAN DASHBOARD DI SINI
+                // SETTING PEMISAHAN DASHBOARD
                 // ============================================================
                 
                 // 1. Tentukan halaman tujuan default (untuk guru biasa)
                 let halamanTujuan = 'dashboard.html';
 
-                // 2. Masukkan username milik Kepsek di sini (harus sama persis dengan di excel/database)
-                // Contoh: const usernameKepsek = "19850128"; atau "kepsek_alkautsar"
+                // 2. Tentukan Username Kepsek
+                // Ganti "kepsek" di bawah ini dengan USERNAME ASLI Kepsek di Spreadsheet
                 const usernameKepsek = "kepsek"; 
 
                 // 3. Cek apakah yang login adalah Kepsek?
                 if (guruDitemukan.username.toLowerCase() === usernameKepsek.toLowerCase()) {
                     halamanTujuan = 'dashboardkepsek.html'; // Alihkan ke dashboard khusus
                 }
-
                 // ============================================================
 
                 // Redirect setelah 1 detik
@@ -279,18 +275,7 @@
                 setTimeout(() => { document.querySelector('.login-container').style.animation = "none"; }, 500);
             }
         });
-                
-                // GAGAL
-                errorMsg.style.display = 'block';
-                document.querySelector('.login-container').style.animation = "shake 0.5s";
-                setTimeout(() => { document.querySelector('.login-container').style.animation = "none"; }, 500);
-            }
-        });
     </script>
 
 </body>
-
 </html>
-
-
-
