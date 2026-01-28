@@ -15,34 +15,37 @@
             min-height: 100vh; 
         }
 
-        /* Navbar */
-        .navbar {
-            background: linear-gradient(to right, #0f2027, #2c5364);
-            color: white;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            position: relative;
-        }
+        /* Navbar - Bright Green Version */
+.navbar {
+    /* PERUBAHAN DI SINI: */
+    /* Mengganti gradasi gelap menjadi gradasi hijau cerah yang sama dengan Welcome Card */
+    background: linear-gradient(to right, rgba(16, 185, 129, 0.9), rgba(52, 211, 153, 0.9));
+    
+    color: white;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    position: relative;
+}
 
-        .navbar .brand {
-            font-size: 1.2em;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+/* Bagian bawah ini tidak berubah */
+.navbar .brand {
+    font-size: 1.2em;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 
-        .navbar-logo {
-            width: 30px;
-            height: 30px;
-            object-fit: contain;
-            background: white;
-            border-radius: 50%;
-        }
-
+.navbar-logo {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+    background: white;
+    border-radius: 50%;
+}
         /* === NEW: STYLE UNTUK MENU DROPDOWN (GARIS TIGA) === */
         .dropdown {
             position: relative;
@@ -1505,4 +1508,5 @@ function prosesUbahPassword() {
 </body>
 
 </html>
+
 
