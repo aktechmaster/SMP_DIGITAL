@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Kepala Sekolah - SMPIT Al-Kautsar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-orange: #FF8C00;
+            --secondary-orange: #FF4500;
+            --tech-bg: #f0f2f5;
+            --card-bg: #ffffff;
+            --text-dark: #333;
+            --text-light: #fff;
+            --gradient: linear-gradient(135deg, var(--primary-orange), var(--secondary-orange));
+            --shadow: 0 4px 6px rgba(0,0,0,0.1);
+            --hover-shadow: 0 10px 15px rgba(255, 69, 0, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--tech-bg);
+            color: var(--text-dark);
+            padding-bottom: 50px;
+        }
+
+        /* --- Navbar --- */
+        .navbar {
+            background: var(--gradient);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .navbar-brand i {
+            margin-right: 10px;
+            font-size: 1.5rem;
+        }
+
+        .navbar-date {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .menu-toggle {
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        /* --- Welcome Card --- */
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        .welcome-card {
+            background: var(--gradient);
+            border-radius: 15px;
+            padding: 40px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+
+        /* Techno Background Effect */
+        .welcome-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url('https://www.transparenttextures.com/patterns/cubes.png');
+            opacity: 0.1;
+        }
+
+        .welcome-text h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .welcome-text h2 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .welcome-text p {
+            margin-top: 10px;
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .profile-pic {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid rgba(255,255,255,0.3);
+            object-fit: cover;
+            z-index: 1;
+        }
+
+        /* --- Dashboard Grid --- */
+        .grid-menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+            border-top: 4px solid transparent;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 180px;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+            border-top: 4px solid var(--primary-orange);
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #FF8C00, #FFD700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+        }
+
+        .card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            color: #444;
+        }
+
+        .card p {
+            font-size: 0.85rem;
+            color: #777;
+        }
+
+        /* --- Percentage Charts (CSS Only) --- */
+        .pie-chart {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: conic-gradient(var(--primary-orange) 0% 0%, #eee 0% 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .pie-chart::after {
+            content: attr(data-percent);
+            position: absolute;
+            background: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            color: var(--primary-orange);
+        }
+
+        /* --- Modal / Popup --- */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            border-top: 5px solid var(--primary-orange);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px; right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #888;
+        }
+
+        .attendance-list {
+            margin-top: 20px;
+            list-style: none;
+        }
+        .attendance-list li {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+        }
+        .tag-absent {
+            background: #ffebee;
+            color: #c62828;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            font-size: 0.8rem;
+            color: #999;
+        }
+
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <i class="fas fa-school"></i> SMPIT Al-Kautsar
+        </div>
+        <div class="navbar-date" id="currentDate">Rabu, 28 Januari 2026</div>
+        <div class="menu-toggle"><i class="fas fa-bars"></i></div>
+    </nav>
+
+    <div class="container">
+        
+        <div class="welcome-card">
+            <div class="welcome-text">
+                <h1>Selamat Datang,</h1>
+                <h2>Bpk. Kepala Sekolah, M.Pd.</h2>
+                <p>NIPY: 12345678 | Kepala Sekolah</p>
+                <p style="margin-top:15px; font-size: 0.9rem; background: rgba(255,255,255,0.2); display:inline-block; padding: 5px 10px; border-radius: 5px;">
+                    Dashboard Monitoring Eksekutif Terpadu
+                </p>
+            </div>
+            <img src="https://i.pravatar.cc/150?img=11" alt="Profile" class="profile-pic">
+        </div>
+
+        <div class="grid-menu">
+
+            <div class="card" onclick="alert('Membuka detail Jurnal Harian...')">
+                <div class="pie-chart" style="background: conic-gradient(var(--primary-orange) 85% 0%, #eee 0% 100%);" data-percent="85%"></div>
+                <h3>Jurnal Mengajar Harian</h3>
+                <p>Persentase keterisian guru hari ini</p>
+            </div>
+
+            <div class="card" onclick="alert('Membuka detail Jurnal Bulanan...')">
+                <div class="pie-chart" style="background: conic-gradient(var(--primary-orange) 92% 0%, #eee 0% 100%);" data-percent="92%"></div>
+                <h3>Jurnal Mengajar Bulan Ini</h3>
+                <p>Akumulasi total bulan Januari</p>
+            </div>
+
+            <div class="card" onclick="alert('Membuka detail T2Q...')">
+                <div class="pie-chart" style="background: conic-gradient(#FFD700 78% 0%, #eee 0% 100%);" data-percent="78%"></div>
+                <h3>Laporan Jurnal T2Q</h3>
+                <p>Progress Tahsin & Tahfidz Bulan Ini</p>
+            </div>
+
+            <div class="card" onclick="openModal()">
+                <div class="card-icon"><i class="fas fa-user-times"></i></div>
+                <h3>Absensi Karyawan</h3>
+                <p style="color: red; font-weight: bold;">3 Orang Tidak Hadir</p>
+                <p>Klik untuk detail nama</p>
+            </div>
+
+            <a href="https://docs.google.com/spreadsheets" target="_blank" style="text-decoration: none;">
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-file-signature"></i></div>
+                    <h3>Notulen Rapat</h3>
+                    <p>Arsip digital hasil rapat dinas</p>
+                </div>
+            </a>
+
+            <a href="https://docs.google.com/spreadsheets" target="_blank" style="text-decoration: none;">
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-mosque"></i></div>
+                    <h3>Mutabaah Yaumiyah</h3>
+                    <p>Monitoring ibadah harian guru/staf</p>
+                </div>
+            </a>
+
+            <a href="https://docs.google.com/spreadsheets" target="_blank" style="text-decoration: none;">
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-quran"></i></div>
+                    <h3>Kehadiran WAFA</h3>
+                    <p>Presensi pengajar metode Wafa</p>
+                </div>
+            </a>
+
+            <a href="https://docs.google.com/spreadsheets" target="_blank" style="text-decoration: none;">
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-users-cog"></i></div>
+                    <h3>Kehadiran UPA</h3>
+                    <p>Unit Penunjang Akademik</p>
+                </div>
+            </a>
+
+            <div class="card" onclick="alert('Masuk ke Database Pegawai...')">
+                <div class="card-icon"><i class="fas fa-id-card"></i></div>
+                <h3>Daftar Pegawai</h3>
+                <p>Database Guru & Karyawan</p>
+            </div>
+
+            <div class="card" onclick="alert('Membuka Catatan Pembinaan...')">
+                <div class="card-icon"><i class="fas fa-clipboard-user"></i></div>
+                <h3>Catatan Pegawai</h3>
+                <p>Buku pembinaan & catatan khusus</p>
+            </div>
+
+        </div>
+
+        <div class="footer">
+            &copy; 2026 Tim IT SMPIT Al-Kautsar | Executive Dashboard System
+        </div>
+    </div>
+
+    <div class="modal" id="absensiModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h2 style="color: var(--primary-orange); margin-bottom: 15px;"><i class="fas fa-exclamation-circle"></i> Ketidakhadiran Hari Ini</h2>
+            <ul class="attendance-list">
+                <li>
+                    <span><i class="fas fa-user"></i> Ahmad Fauzi, S.Pd</span>
+                    <span class="tag-absent">Sakit</span>
+                </li>
+                <li>
+                    <span><i class="fas fa-user"></i> Siti Aminah, M.Pd</span>
+                    <span class="tag-absent">Izin</span>
+                </li>
+                <li>
+                    <span><i class="fas fa-user"></i> Budi Santoso (Staff)</span>
+                    <span class="tag-absent">Tanpa Ket.</span>
+                </li>
+            </ul>
+            <p style="margin-top: 20px; font-size: 0.8rem; color: #666;">Data diupdate real-time pukul 07:15 WIB</p>
+        </div>
+    </div>
+
+    <script>
+        // Update Tanggal Otomatis
+        const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('currentDate').innerText = new Date().toLocaleDateString('id-ID', dateOptions);
+
+        // Logic Modal Popup
+        function openModal() {
+            document.getElementById('absensiModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('absensiModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('absensiModal');
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>
