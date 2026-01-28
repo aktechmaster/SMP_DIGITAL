@@ -107,25 +107,37 @@
             margin: 0 auto;
         }
 
-        /* Welcome Card */
         .welcome-card {
-            background: white;
-            border-radius: 15px;
-            padding: 40px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            background-image: url('https://img.freepik.com/free-vector/abstract-blue-geometric-shapes-background_1035-17545.jpg');
-            background-size: cover;
-            background-position: center;
-            position: relative;
-            color: white;
-            overflow: hidden;
-            margin-bottom: 30px;
-        }
+        /* --- GANTI BAGIAN BACKGROUND INI --- */
         
-        .welcome-card::before {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(15, 32, 39, 0.85); z-index: 1;
-        }
+        /* Gradasi Hijau Tech: Gelap (Teal) ke Terang (Neon Green) */
+        background: linear-gradient(135deg, #023638 0%, #00b894 100%);
+        
+        /* Tambahkan efek Glow/Cahaya hijau di bawah kotak agar futuristik */
+        box-shadow: 0 15px 25px rgba(0, 184, 148, 0.3);
+        
+        /* --- PASTIIN PROPERTI DI BAWAH INI TETAP ADA (JANGAN DIHAPUS) --- */
+        border-radius: 15px; /* Sesuaikan dengan lengkungan asli Anda */
+        padding: 20px;       /* Sesuaikan padding asli Anda */
+        color: white;        /* Text tetap putih agar kontras */
+        display: flex;       /* Agar susunan foto dan teks tetap rapi */
+        align-items: center;
+        position: relative;
+        overflow: hidden;    /* Menjaga agar isi tidak keluar kotak */
+    }
+
+    /* OPSIONAL: Efek hiasan lingkaran samar agar lebih "Tech" */
+    .welcome-card::before {
+        content: '';
+        position: absolute;
+        top: -50px;
+        right: -50px;
+        width: 150px;
+        height: 150px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        pointer-events: none;
+    }
 
         .welcome-content { position: relative; z-index: 2; }
         
@@ -1493,6 +1505,7 @@ function prosesUbahPassword() {
 </body>
 
 </html>
+
 
 
 
