@@ -19,9 +19,9 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         body { background-color: #f4f6f9; color: #333; padding-bottom: 50px; }
 
-        /* --- HALAMAN LOGIN (BARU) --- */
+        /* --- HALAMAN LOGIN (Overlay) --- */
         #login-page {
-            display: none; /* Tersembunyi secara default, muncul saat logout */
+            display: none; /* Default Hidden, muncul saat Logout */
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: var(--gradient);
@@ -46,7 +46,7 @@
 
         /* --- DASHBOARD CONTAINER --- */
         #dashboard-container {
-            display: block; /* Tampil secara default */
+            display: block; /* Default Tampil */
         }
 
         /* --- Navbar --- */
@@ -267,15 +267,17 @@
         }
         function closeModal(id) { document.getElementById(id).classList.remove('show'); }
 
-        // --- FITUR LOGOUT & LOGIN (Simulasi) ---
+        // --- FITUR LOGOUT & LOGIN (Satu Halaman) ---
         
         function logoutAction() {
             if(confirm('Apakah Anda yakin ingin keluar dari aplikasi?')) {
-                // Sembunyikan Dashboard
+                // 1. Sembunyikan Dashboard
                 document.getElementById('dashboard-container').style.display = 'none';
-                // Tampilkan Halaman Login
+                
+                // 2. Tampilkan Halaman Login (Overlay)
                 document.getElementById('login-page').style.display = 'flex';
-                // Tutup Menu Dropdown
+                
+                // 3. Tutup Menu Dropdown
                 document.getElementById('dropdownMenu').classList.remove('active');
             }
         }
@@ -287,10 +289,12 @@
             btn.innerText = "Memproses...";
             
             setTimeout(() => {
-                // Sembunyikan Halaman Login
+                // 1. Sembunyikan Halaman Login
                 document.getElementById('login-page').style.display = 'none';
-                // Tampilkan Dashboard
+                
+                // 2. Tampilkan Dashboard Kembali
                 document.getElementById('dashboard-container').style.display = 'block';
+                
                 // Reset Tombol
                 btn.innerText = originalText;
             }, 800);
