@@ -7,18 +7,17 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-    /* Warna Utama yang Anda minta */
-    --primary-orange: #ff7f00;
-    
-    /* Warna pendukung untuk gradient (sedikit lebih gelap/kemerahan agar elegan) */
-    --secondary-orange: #e65100; 
-    
-    /* Membuat Gradient yang halus */
-    --gradient: linear-gradient(135deg, var(--primary-orange) 0%, var(--secondary-orange) 100%);
-    
-    /* Shadow dengan nuansa oranye agar terlihat "glowing" */
-    --shadow: 0 10px 30px rgba(255, 127, 0, 0.3);
-}
+            /* Warna Utama Dashboard */
+            --primary-orange: #ff7f00;
+            --secondary-orange: #e65100; 
+            --gradient: linear-gradient(135deg, var(--primary-orange) 0%, var(--secondary-orange) 100%);
+            --shadow: 0 10px 30px rgba(255, 127, 0, 0.3);
+            --card-bg: #fff;
+            
+            /* Warna Khusus Modal sesuai Gambar (Cyan/Biru Muda) */
+            --modal-btn-cyan: #00c3ff;
+            --modal-btn-hover: #00b3ea;
+        }
 
         * {
             margin: 0;
@@ -28,113 +27,156 @@
         }
 
         body {
-            background-color: var(--tech-bg);
-            color: var(--text-dark);
+            background-color: #f4f6f9;
+            color: #333;
             padding-bottom: 50px;
         }
 
         /* --- Navbar --- */
-.navbar {
-    background: var(--gradient); /* Menggunakan gradient oranye baru */
-    padding: 15px 30px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: white;
-    /* Shadow sedikit oranye agar menyatu */
-    box-shadow: 0 4px 15px rgba(255, 127, 0, 0.2); 
-}
+        .navbar {
+            background: var(--gradient);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 127, 0, 0.2); 
+            position: relative; /* Penting untuk dropdown absolute */
+        }
 
-.navbar-brand {
-    display: flex;
-    align-items: center;
-    font-weight: bold;
-    font-size: 1.1rem;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.1); /* Sedikit bayangan agar teks pop-up */
-}
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
 
-.navbar-brand i {
-    margin-right: 10px;
-    font-size: 1.5rem;
-}
+        .navbar-brand i {
+            margin-right: 10px;
+            font-size: 1.5rem;
+        }
 
-.navbar-date {
-    font-size: 0.9rem;
-    opacity: 0.95; /* Opacity dinaikkan sedikit agar lebih jelas di oranye */
-}
+        .navbar-date {
+            font-size: 0.9rem;
+            opacity: 0.95;
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .navbar-date { display: none; } /* Hide date on mobile for clean look */
+        }
 
-.menu-toggle {
-    cursor: pointer;
-    font-size: 1.2rem;
-    transition: transform 0.2s;
-}
+        /* --- Menu Toggle & Dropdown --- */
+        .menu-container {
+            position: relative;
+        }
 
-.menu-toggle:hover {
-    transform: scale(1.1); /* Efek interaktif kecil */
-}
+        .menu-toggle {
+            cursor: pointer;
+            font-size: 1.4rem;
+            transition: transform 0.2s;
+            padding: 5px;
+        }
 
-/* --- Welcome Card --- */
-.container {
-    max-width: 1200px;
-    margin: 20px auto;
-    padding: 0 20px;
-}
+        .menu-toggle:hover {
+            transform: scale(1.1);
+        }
 
-.welcome-card {
-    background: var(--gradient);
-    border-radius: 15px;
-    padding: 40px;
-    color: white;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: relative;
-    overflow: hidden;
-    box-shadow: var(--shadow); /* Shadow oranye halus */
-    margin-bottom: 30px;
-}
+        /* Dropdown Menu Style */
+        .dropdown-menu {
+            display: none; /* Hidden by default */
+            position: absolute;
+            top: 40px;
+            right: 0;
+            background: white;
+            color: #333;
+            width: 200px;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            z-index: 2000;
+            overflow: hidden;
+            animation: fadeIn 0.2s ease;
+        }
 
-/* Techno Background Effect */
-.welcome-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    /* Pola kotak-kotak transparan */
-    background: url('https://www.transparenttextures.com/patterns/cubes.png');
-    opacity: 0.15; /* Sedikit lebih terlihat untuk tekstur */
-    mix-blend-mode: overlay; /* Agar menyatu dengan oranye */
-}
+        .dropdown-menu.active {
+            display: block;
+        }
 
-.welcome-text h1 {
-    font-size: 1.8rem;
-    margin-bottom: 10px;
-    font-weight: 600;
-}
+        .dropdown-menu a {
+            display: block;
+            padding: 12px 20px;
+            text-decoration: none;
+            color: #555;
+            font-size: 0.95rem;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+        }
 
-.welcome-text h2 {
-    font-size: 2.2rem;
-    font-weight: 800;
-    /* Text shadow diperhalus agar tidak kotor di background oranye */
-    text-shadow: 2px 2px 10px rgba(0,0,0,0.15);
-}
+        .dropdown-menu a i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+            color: var(--secondary-orange);
+        }
 
-.welcome-text p {
-    margin-top: 10px;
-    font-size: 1rem;
-    opacity: 0.95;
-    font-weight: 500;
-}
+        .dropdown-menu a:hover {
+            background-color: #fef0e6; /* Light orange hover */
+            color: var(--secondary-orange);
+        }
 
-.profile-pic {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    /* Border putih semi-transparan agar foto terlihat "clean" */
-    border: 4px solid rgba(255,255,255,0.4); 
-    object-fit: cover;
-    z-index: 1;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-}
+        .dropdown-divider {
+            height: 1px;
+            background-color: #eee;
+            margin: 0;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Welcome Card --- */
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        .welcome-card {
+            background: var(--gradient);
+            border-radius: 15px;
+            padding: 40px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+
+        .welcome-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url('https://www.transparenttextures.com/patterns/cubes.png');
+            opacity: 0.15;
+            mix-blend-mode: overlay;
+        }
+
+        .welcome-text h1 { font-size: 1.8rem; margin-bottom: 10px; font-weight: 600; }
+        .welcome-text h2 { font-size: 2.2rem; font-weight: 800; text-shadow: 2px 2px 10px rgba(0,0,0,0.15); }
+        .welcome-text p { margin-top: 10px; font-size: 1rem; opacity: 0.95; font-weight: 500; }
+
+        .profile-pic {
+            width: 120px; height: 120px; border-radius: 50%;
+            border: 4px solid rgba(255,255,255,0.4); 
+            object-fit: cover; z-index: 1;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
 
         /* --- Dashboard Grid --- */
         .grid-menu {
@@ -150,19 +192,15 @@
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: var(--shadow);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             border-top: 4px solid transparent;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
             min-height: 180px;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
         }
 
         .card:hover {
             transform: translateY(-5px);
-            box-shadow: var(--hover-shadow);
+            box-shadow: var(--shadow);
             border-top: 4px solid var(--primary-orange);
         }
 
@@ -174,99 +212,122 @@
             margin-bottom: 15px;
         }
 
-        .card h3 {
-            font-size: 1.1rem;
-            margin-bottom: 8px;
-            color: #444;
-        }
+        .card h3 { font-size: 1.1rem; margin-bottom: 8px; color: #444; }
+        .card p { font-size: 0.85rem; color: #777; }
 
-        .card p {
-            font-size: 0.85rem;
-            color: #777;
-        }
-
-        /* --- Percentage Charts (CSS Only) --- */
+        /* Pie Chart */
         .pie-chart {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
+            width: 80px; height: 80px; border-radius: 50%;
             background: conic-gradient(var(--primary-orange) 0% 0%, #eee 0% 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 15px;
-            position: relative;
+            display: flex; justify-content: center; align-items: center;
+            margin-bottom: 15px; position: relative;
         }
-
         .pie-chart::after {
             content: attr(data-percent);
-            position: absolute;
-            background: white;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
-            color: var(--primary-orange);
+            position: absolute; background: white;
+            width: 60px; height: 60px; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            font-weight: bold; color: var(--primary-orange);
         }
 
-        /* --- Modal / Popup --- */
+        /* --- GENERAL MODAL STYLES --- */
         .modal {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
+            background: rgba(0,0,0,0.6);
+            z-index: 3000;
             justify-content: center;
             align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .modal.show {
+            display: flex;
+            opacity: 1;
         }
 
-        .modal-content {
+        /* --- 1. MODAL ABSENSI (Existing) --- */
+        .modal-content-absensi {
             background: white;
             padding: 30px;
             border-radius: 10px;
-            width: 90%;
-            max-width: 500px;
+            width: 90%; max-width: 500px;
             position: relative;
             border-top: 5px solid var(--primary-orange);
         }
 
-        .close-btn {
-            position: absolute;
-            top: 10px; right: 15px;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #888;
+        .attendance-list { list-style: none; margin-top: 20px; }
+        .attendance-list li { padding: 10px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; }
+        .tag-absent { background: #ffebee; color: #c62828; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
+
+        /* --- 2. MODAL TENTANG (Sesuai Gambar 1) --- */
+        .modal-content-about {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 20px;
+            width: 90%; max-width: 350px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
         }
 
-        .attendance-list {
-            margin-top: 20px;
-            list-style: none;
+        .about-icon {
+            font-size: 4rem;
+            color: #d1c4e9; /* Warna ungu muda seperti di gambar */
+            margin-bottom: 20px;
         }
-        .attendance-list li {
-            padding: 10px;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            justify-content: space-between;
-        }
-        .tag-absent {
-            background: #ffebee;
-            color: #c62828;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.8rem;
+        
+        .about-title { font-weight: bold; font-size: 1.2rem; color: #333; margin-bottom: 5px; }
+        .about-version { color: #888; font-size: 0.9rem; margin-bottom: 5px; }
+        .about-dev { color: #888; font-size: 0.9rem; margin-bottom: 30px; }
+
+        .btn-cyan {
+            background-color: var(--modal-btn-cyan);
+            color: white;
+            border: none;
+            padding: 12px 0;
+            width: 100%;
+            border-radius: 25px;
             font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 195, 255, 0.3);
+            transition: 0.3s;
         }
+        .btn-cyan:hover { background-color: var(--modal-btn-hover); transform: scale(1.02); }
+
+        /* --- 3. MODAL GANTI PASSWORD (Sesuai Gambar 2) --- */
+        .modal-content-password {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            width: 90%; max-width: 400px;
+            position: relative;
+        }
+
+        .modal-header-pass {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px;
+        }
+        .modal-header-pass h3 { font-size: 1.2rem; font-weight: bold; }
+        .close-x { cursor: pointer; color: #aaa; font-size: 1.2rem; font-weight: bold; }
+
+        .pass-desc { color: #666; font-size: 0.9rem; margin-bottom: 20px; text-align: center; }
+
+        .form-group { margin-bottom: 15px; text-align: left; }
+        .form-group label { display: block; font-weight: bold; font-size: 0.85rem; margin-bottom: 5px; color: #333; }
+        .form-input {
+            width: 100%; padding: 10px; border: 1px solid #ddd;
+            border-radius: 6px; font-size: 0.9rem; color: #555;
+            outline: none;
+        }
+        .form-input:focus { border-color: var(--modal-btn-cyan); }
+        .btn-full { width: 100%; border-radius: 25px; margin-top: 10px; }
 
         /* Footer */
-        .footer {
-            text-align: center;
-            margin-top: 50px;
-            font-size: 0.8rem;
-            color: #999;
-        }
+        .footer { text-align: center; margin-top: 50px; font-size: 0.8rem; color: #999; }
 
     </style>
 </head>
@@ -277,7 +338,20 @@
             <i class="fas fa-school"></i> SMPIT Al-Kautsar
         </div>
         <div class="navbar-date" id="currentDate">Rabu, 28 Januari 2026</div>
-        <div class="menu-toggle"><i class="fas fa-bars"></i></div>
+        
+        <div class="menu-container">
+            <div class="menu-toggle" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </div>
+            
+            <div class="dropdown-menu" id="dropdownMenu">
+                <a href="#" onclick="refreshData()"><i class="fas fa-sync-alt"></i> Refresh Data</a>
+                <a href="#" onclick="openModal('modalAbout')"><i class="fas fa-info-circle"></i> Tentang</a>
+                <a href="#" onclick="openModal('modalPassword')"><i class="fas fa-key"></i> Ubah Password</a>
+                <div class="dropdown-divider"></div>
+                <a href="#" onclick="logout()" style="color: #d9534f;"><i class="fas fa-sign-out-alt" style="color: #d9534f;"></i> Logout</a>
+            </div>
+        </div>
     </nav>
 
     <div class="container">
@@ -314,14 +388,14 @@
                 <p>Progress Tahsin & Tahfidz Bulan Ini</p>
             </div>
 
-            <div class="card" onclick="openModal()">
+            <div class="card" onclick="openModal('modalAbsensi')">
                 <div class="card-icon"><i class="fas fa-user-times"></i></div>
                 <h3>Absensi Karyawan</h3>
                 <p style="color: red; font-weight: bold;">3 Orang Tidak Hadir</p>
                 <p>Klik untuk detail nama</p>
             </div>
 
-            <a href="https://docs.google.com/spreadsheets" target="_blank" style="text-decoration: none;">
+            <a href="#" style="text-decoration: none;">
                 <div class="card">
                     <div class="card-icon"><i class="fas fa-file-signature"></i></div>
                     <h3>Notulen Rapat</h3>
@@ -329,7 +403,7 @@
                 </div>
             </a>
 
-            <a href="https://docs.google.com/spreadsheets" target="_blank" style="text-decoration: none;">
+            <a href="#" style="text-decoration: none;">
                 <div class="card">
                     <div class="card-icon"><i class="fas fa-mosque"></i></div>
                     <h3>Mutabaah Yaumiyah</h3>
@@ -337,15 +411,7 @@
                 </div>
             </a>
 
-            <a href="https://docs.google.com/spreadsheets" target="_blank" style="text-decoration: none;">
-                <div class="card">
-                    <div class="card-icon"><i class="fas fa-quran"></i></div>
-                    <h3>Kehadiran WAFA</h3>
-                    <p>Presensi pengajar metode Wafa</p>
-                </div>
-            </a>
-
-            <a href="https://docs.google.com/spreadsheets" target="_blank" style="text-decoration: none;">
+            <a href="#" style="text-decoration: none;">
                 <div class="card">
                     <div class="card-icon"><i class="fas fa-users-cog"></i></div>
                     <h3>Kehadiran UPA</h3>
@@ -359,12 +425,6 @@
                 <p>Database Guru & Karyawan</p>
             </div>
 
-            <div class="card" onclick="alert('Membuka Catatan Pembinaan...')">
-                <div class="card-icon"><i class="fas fa-clipboard-user"></i></div>
-                <h3>Catatan Pegawai</h3>
-                <p>Buku pembinaan & catatan khusus</p>
-            </div>
-
         </div>
 
         <div class="footer">
@@ -372,25 +432,54 @@
         </div>
     </div>
 
-    <div class="modal" id="absensiModal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal()">&times;</span>
+    <div class="modal" id="modalAbsensi">
+        <div class="modal-content-absensi">
+            <span class="close-x" style="position: absolute; top:10px; right:15px; font-size:1.5rem;" onclick="closeModal('modalAbsensi')">&times;</span>
             <h2 style="color: var(--primary-orange); margin-bottom: 15px;"><i class="fas fa-exclamation-circle"></i> Ketidakhadiran Hari Ini</h2>
             <ul class="attendance-list">
-                <li>
-                    <span><i class="fas fa-user"></i> Ahmad Fauzi, S.Pd</span>
-                    <span class="tag-absent">Sakit</span>
-                </li>
-                <li>
-                    <span><i class="fas fa-user"></i> Siti Aminah, M.Pd</span>
-                    <span class="tag-absent">Izin</span>
-                </li>
-                <li>
-                    <span><i class="fas fa-user"></i> Budi Santoso (Staff)</span>
-                    <span class="tag-absent">Tanpa Ket.</span>
-                </li>
+                <li><span><i class="fas fa-user"></i> Ahmad Fauzi, S.Pd</span><span class="tag-absent">Sakit</span></li>
+                <li><span><i class="fas fa-user"></i> Siti Aminah, M.Pd</span><span class="tag-absent">Izin</span></li>
+                <li><span><i class="fas fa-user"></i> Budi Santoso (Staff)</span><span class="tag-absent">Tanpa Ket.</span></li>
             </ul>
             <p style="margin-top: 20px; font-size: 0.8rem; color: #666;">Data diupdate real-time pukul 07:15 WIB</p>
+        </div>
+    </div>
+
+    <div class="modal" id="modalAbout">
+        <div class="modal-content-about">
+            <div class="about-icon">
+                <i class="fas fa-laptop-code" style="color: #9575cd;"></i>
+                <i class="fas fa-user" style="font-size: 2rem; color: #ffca28; margin-left: -20px; text-shadow: 2px 2px 0 #fff;"></i>
+            </div>
+            
+            <div class="about-title">Tentang Aplikasi</div>
+            <div class="about-version">DIGITAL v1.0</div>
+            <div class="about-dev">Developed by aktechmaster</div>
+            
+            <button class="btn-cyan" onclick="closeModal('modalAbout')">Siap!</button>
+        </div>
+    </div>
+
+    <div class="modal" id="modalPassword">
+        <div class="modal-content-password">
+            <div class="modal-header-pass">
+                <h3>Ganti Password</h3>
+                <span class="close-x" onclick="closeModal('modalPassword')">&times;</span>
+            </div>
+            
+            <p class="pass-desc">Silakan masukkan password baru Anda:</p>
+            
+            <div class="form-group">
+                <label>Password Baru</label>
+                <input type="password" class="form-input" placeholder="Masukkan password baru...">
+            </div>
+            
+            <div class="form-group">
+                <label>Konfirmasi Password</label>
+                <input type="password" class="form-input" placeholder="Ketik ulang password tadi...">
+            </div>
+            
+            <button class="btn-cyan btn-full" onclick="alert('Password berhasil disimpan!'); closeModal('modalPassword');">Simpan Password</button>
         </div>
     </div>
 
@@ -399,20 +488,51 @@
         const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
         document.getElementById('currentDate').innerText = new Date().toLocaleDateString('id-ID', dateOptions);
 
-        // Logic Modal Popup
-        function openModal() {
-            document.getElementById('absensiModal').style.display = 'flex';
+        /* --- LOGIC DROPDOWN MENU --- */
+        function toggleMenu() {
+            const menu = document.getElementById('dropdownMenu');
+            menu.classList.toggle('active');
         }
 
-        function closeModal() {
-            document.getElementById('absensiModal').style.display = 'none';
+        /* --- LOGIC MODALS (Generic) --- */
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('show');
+            // Tutup menu dropdown jika terbuka
+            document.getElementById('dropdownMenu').classList.remove('active');
         }
 
-        // Close modal when clicking outside
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+        }
+
+        /* --- MENU ACTIONS --- */
+        function refreshData() {
+            // Animasi loading atau reload page
+            const btn = document.querySelector('.fa-sync-alt');
+            btn.classList.add('fa-spin');
+            setTimeout(() => {
+                location.reload();
+            }, 500); // delay sedikit agar terlihat efeknya
+        }
+
+        function logout() {
+            if(confirm('Apakah Anda yakin ingin keluar dari aplikasi?')) {
+                alert('Anda telah logout.');
+                // Di sini bisa redirect: window.location.href = 'login.html';
+                location.reload(); // Simulasi reset
+            }
+        }
+
+        /* --- Event Listener: Klik di luar element --- */
         window.onclick = function(event) {
-            const modal = document.getElementById('absensiModal');
-            if (event.target == modal) {
-                modal.style.display = "none";
+            // Tutup Modal jika klik di background gelap
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('show');
+            }
+            
+            // Tutup Dropdown jika klik di luar menu
+            if (!event.target.closest('.menu-container')) {
+                document.getElementById('dropdownMenu').classList.remove('active');
             }
         }
     </script>
