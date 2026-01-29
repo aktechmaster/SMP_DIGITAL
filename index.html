@@ -182,7 +182,7 @@
         // =======================================================
         // KONFIGURASI
         // =======================================================
-        // URL Script Anda (Pastikan Deploy sebagai "Web App" -> "Anyone")
+        // Pastikan URL ini hasil "New Deployment"
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxjOtLl18ZvhzJnvGYGBiOki7UmjjeinUdFecOtBVqYgY6BrgVvMXgZKHNRouSoJgA2ew/exec"; 
         
         let databaseGuru = []; 
@@ -191,27 +191,41 @@
         // 1. SAAT HALAMAN DIBUKA, AMBIL DATA
         window.onload = async function() {
             try {
-                btnLogin.innerHTML = "Memuat Data...";
+                // Ubah status tombol jadi Loading
+                btnLogin.innerHTML = "Menghubungkan Database...";
                 btnLogin.disabled = true;
+                btnLogin.style.cursor = "wait";
                 btnLogin.style.opacity = "0.7";
 
                 const response = await fetch(SCRIPT_URL);
+                
+                // Cek jika server Google error (Bukan 200 OK)
+                if (!response.ok) {
+                    throw new Error("Server Google Error: " + response.status);
+                }
+
                 const data = await response.json();
 
+                // Cek apakah data user ada
                 if (data.users) {
                     databaseGuru = data.users;
-                    console.log("Database Dimuat:", databaseGuru.length, "users");
-                    console.log("Contoh Data:", databaseGuru[0]); // Cek console browser (F12) untuk lihat apakah kolom jabatan masuk
+                    console.log("Database Berhasil Dimuat:", databaseGuru.length, "user ditemukan.");
                     
+                    // Kembalikan tombol ke kondisi siap
                     btnLogin.innerHTML = "MASUK PORTAL";
                     btnLogin.disabled = false;
+                    btnLogin.style.cursor = "pointer";
                     btnLogin.style.opacity = "1";
+                    btnLogin.style.background = "linear-gradient(to right, #00c6ff, #0072ff)";
+                } else {
+                    throw new Error("Format Data Salah (Objek 'users' tidak ditemukan)");
                 }
 
             } catch (error) {
-                console.error("Error:", error);
-                btnLogin.innerHTML = "Gagal Koneksi";
-                alert("Gagal terhubung ke database. Coba refresh halaman.");
+                console.error("Detail Error:", error);
+                // Tampilkan pesan error di tombol, JANGAN PAKAI ALERT biar tidak mengganggu
+                btnLogin.innerHTML = "Gagal Koneksi (Cek Console)";
+                btnLogin.style.background = "#ff6b6b"; 
             }
         };
 
@@ -223,8 +237,9 @@
             const inputPass = document.getElementById('password').value;
             const errorMsg = document.getElementById('error-msg');
 
+            // Jika data belum masuk tapi user maksa klik enter
             if (databaseGuru.length === 0) {
-                alert("Data sedang dimuat, mohon tunggu sebentar...");
+                alert("Data belum siap. Pastikan internet lancar dan refresh halaman.");
                 return;
             }
 
@@ -235,31 +250,25 @@
             );
 
             if (userDitemukan) {
-                // ===========================================
-                // LOGIKA PENGARAHAN HALAMAN (REDIRECT)
-                // ===========================================
-                
-                // Simpan Data User
+                // SUKSES LOGIN
                 localStorage.setItem('namaGuru', userDitemukan.nama);
-                localStorage.setItem('jabatanUser', userDitemukan.jabatan); // Simpan jabatan
+                localStorage.setItem('jabatanUser', userDitemukan.jabatan); 
 
-                // Animasi Sukses
+                // Efek visual sukses
                 btnLogin.innerHTML = "Login Berhasil...";
                 btnLogin.style.background = "linear-gradient(to right, #11998e, #38ef7d)";
                 errorMsg.style.display = 'none';
 
-                // Tentukan Tujuan Berdasarkan Jabatan
-                // Pastikan di Google Sheet Kolom E diisi: "Kepala Sekolah" atau "Guru"
-                let tujuanHalaman = 'dashboard.html'; // Default ke dashboard guru
-                
-                // Ambil jabatan dan bersihkan stringnya
+                // Cek Jabatan untuk Redirect
+                let tujuanHalaman = 'dashboard.html'; // Default Guru
                 let jabatan = userDitemukan.jabatan ? String(userDitemukan.jabatan).toLowerCase() : "";
 
+                // Logika Kepsek
                 if (jabatan.includes("kepala sekolah") || jabatan.includes("kepsek")) {
                     tujuanHalaman = 'dashboardkepsek.html';
                 } 
                 
-                console.log("Login sebagai:", userDitemukan.nama, "| Jabatan:", jabatan, "| Ke:", tujuanHalaman);
+                console.log("Login User:", userDitemukan.nama, "| Role:", jabatan, "->", tujuanHalaman);
 
                 // Redirect
                 setTimeout(() => {
@@ -267,13 +276,15 @@
                 }, 1000);
 
             } else {
-                // GAGAL
+                // GAGAL LOGIN (Password salah)
                 errorMsg.style.display = 'block';
                 document.querySelector('.login-container').style.animation = "shake 0.5s";
                 setTimeout(() => { document.querySelector('.login-container').style.animation = "none"; }, 500);
             }
         });
     </script>
+    </script>
 
 </body>
 </html>
+
