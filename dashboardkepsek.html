@@ -208,10 +208,13 @@
             <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
                 <h3>Ganti Password</h3><span class="close-x" onclick="closeModal('modalPassword')">&times;</span>
             </div>
-            <p style="color:#666; font-size:0.9rem; margin-bottom:20px;">Silakan masukkan password baru Anda:</p>
-            <input type="password" class="form-input" placeholder="Password Baru">
-            <input type="password" class="form-input" placeholder="Konfirmasi Password">
-            <button class="btn-cyan" onclick="alert('Password berhasil disimpan!'); closeModal('modalPassword');">Simpan Password</button>
+            <p style="color:#666; font-size:0.9rem; margin-bottom:20px;">Lakukan perubahan password secara berkala untuk keamanan.</p>
+            
+            <input type="password" id="oldPass" class="form-input" placeholder="Password Lama (Saat ini)">
+            <input type="password" id="newPass" class="form-input" placeholder="Password Baru (Min. 6 Karakter)">
+            <input type="password" id="confPass" class="form-input" placeholder="Konfirmasi Password Baru">
+            
+            <button class="btn-cyan" onclick="savePasswordLogic()">Simpan Password</button>
         </div>
     </div>
 
@@ -230,10 +233,9 @@
         }
         function closeModal(id) { document.getElementById(id).classList.remove('show'); }
 
-        // --- UPDATE: LOGOUT PINDAH HALAMAN (BUKAN DUMMY) ---
+        // --- LOGOUT KE PORTAL NYATA (INDEX.HTML) ---
         function logoutAction() {
             if(confirm('Apakah Anda yakin ingin keluar dari aplikasi?')) {
-                // Mengarahkan langsung ke portal utama
                 window.location.href = 'index.html';
             }
         }
@@ -245,6 +247,61 @@
                 icon.classList.remove('fa-spin'); 
                 alert('Data berhasil diperbarui!');
             }, 1000);
+        }
+
+        // --- LOGIKA GANTI PASSWORD REAL (Validasi & Penyimpanan Lokal) ---
+        function savePasswordLogic() {
+            // 1. Ambil nilai dari input
+            const oldPass = document.getElementById('oldPass').value;
+            const newPass = document.getElementById('newPass').value;
+            const confPass = document.getElementById('confPass').value;
+
+            // 2. Validasi (Security Check)
+            if (oldPass === "" || newPass === "" || confPass === "") {
+                alert("Gagal: Semua kolom wajib diisi!");
+                return;
+            }
+
+            if (newPass.length < 6) {
+                alert("Gagal: Password baru minimal harus 6 karakter!");
+                return;
+            }
+
+            if (newPass !== confPass) {
+                alert("Gagal: Konfirmasi password tidak cocok dengan password baru!");
+                return;
+            }
+
+            if (oldPass === newPass) {
+                alert("Gagal: Password baru tidak boleh sama dengan password lama!");
+                return;
+            }
+
+            // 3. Simulasi Proses Penyimpanan ke Server (Database)
+            // Karena ini file HTML standalone, kita gunakan LocalStorage browser sebagai pengganti database.
+            // Jika Anda punya Backend (PHP/NodeJS), bagian ini diganti dengan fetch() API.
+            
+            const btn = document.querySelector('#modalPassword .btn-cyan');
+            const originalText = btn.innerText;
+            btn.innerText = "Menyimpan...";
+            btn.disabled = true;
+
+            setTimeout(() => {
+                // Simpan ke Browser Storage
+                localStorage.setItem('user_password_kepsek', newPass);
+
+                alert('SUKSES: Password berhasil diperbarui!');
+                
+                // Reset Form
+                document.getElementById('oldPass').value = '';
+                document.getElementById('newPass').value = '';
+                document.getElementById('confPass').value = '';
+                
+                // Kembalikan Tombol & Tutup Modal
+                btn.innerText = originalText;
+                btn.disabled = false;
+                closeModal('modalPassword');
+            }, 1000); // Simulasi delay server 1 detik
         }
 
         // Close when clicking outside
