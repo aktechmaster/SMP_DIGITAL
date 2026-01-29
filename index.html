@@ -180,111 +180,90 @@
 
     <script>
         // =======================================================
-        // KONFIGURASI
+        // KONFIGURASI PENTING
         // =======================================================
-        // Pastikan URL ini hasil "New Deployment"
+        // Tempel URL Web App Script Anda di sini (yang berakhiran /exec)
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxjOtLl18ZvhzJnvGYGBiOki7UmjjeinUdFecOtBVqYgY6BrgVvMXgZKHNRouSoJgA2ew/exec"; 
         
+        // Variabel untuk menampung data dari Sheet
         let databaseGuru = []; 
         const btnLogin = document.querySelector('.btn-login');
 
-        // 1. SAAT HALAMAN DIBUKA, AMBIL DATA
+        // 1. SAAT HALAMAN DIBUKA, AMBIL DATA TERBARU DARI SHEET
         window.onload = async function() {
             try {
-                // Ubah status tombol jadi Loading
-                btnLogin.innerHTML = "Menghubungkan Database...";
+                // Matikan tombol login dulu biar user gak buru-buru
+                btnLogin.innerHTML = "Memuat Data...";
                 btnLogin.disabled = true;
-                btnLogin.style.cursor = "wait";
                 btnLogin.style.opacity = "0.7";
 
+                // Minta data ke Code.gs
                 const response = await fetch(SCRIPT_URL);
-                
-                // Cek jika server Google error (Bukan 200 OK)
-                if (!response.ok) {
-                    throw new Error("Server Google Error: " + response.status);
-                }
-
                 const data = await response.json();
 
-                // Cek apakah data user ada
+                // Simpan data 'users' dari Code.gs ke variabel lokal
+                // Code.gs mengirim format: { username: "...", password: "...", nama: "..." }
                 if (data.users) {
                     databaseGuru = data.users;
-                    console.log("Database Berhasil Dimuat:", databaseGuru.length, "user ditemukan.");
+                    console.log("Data Guru Berhasil Dimuat:", databaseGuru.length, "orang");
                     
-                    // Kembalikan tombol ke kondisi siap
+                    // Nyalakan tombol login
                     btnLogin.innerHTML = "MASUK PORTAL";
                     btnLogin.disabled = false;
-                    btnLogin.style.cursor = "pointer";
                     btnLogin.style.opacity = "1";
-                    btnLogin.style.background = "linear-gradient(to right, #00c6ff, #0072ff)";
-                } else {
-                    throw new Error("Format Data Salah (Objek 'users' tidak ditemukan)");
                 }
 
             } catch (error) {
-                console.error("Detail Error:", error);
-                // Tampilkan pesan error di tombol, JANGAN PAKAI ALERT biar tidak mengganggu
-                btnLogin.innerHTML = "Gagal Koneksi (Cek Console)";
-                btnLogin.style.background = "#ff6b6b"; 
+                console.error("Gagal ambil data:", error);
+                btnLogin.innerHTML = "Gagal Koneksi Server";
+                alert("Gagal mengambil data database! Pastikan internet lancar atau URL Script benar.");
             }
         };
 
-        // 2. LOGIKA LOGIN & PEMISAHAN HAK AKSES
+        // 2. LOGIKA LOGIN (Sama seperti sebelumnya, tapi pakai data dinamis)
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault(); 
             
-            const inputUser = document.getElementById('username').value.trim().toLowerCase(); 
+            const inputUser = document.getElementById('username').value.trim(); // Hapus spasi gak sengaja
             const inputPass = document.getElementById('password').value;
             const errorMsg = document.getElementById('error-msg');
 
-            // Jika data belum masuk tapi user maksa klik enter
+            // Cek apakah data sudah terdownload
             if (databaseGuru.length === 0) {
-                alert("Data belum siap. Pastikan internet lancar dan refresh halaman.");
+                alert("Data guru belum selesai dimuat. Tunggu sebentar...");
                 return;
             }
 
-            // Cari user yang cocok
-            const userDitemukan = databaseGuru.find(u => 
-                String(u.username).toLowerCase() === inputUser && 
-                String(u.password) === String(inputPass)
+            // PENTING: Sesuaikan nama key dengan yang dikirim Code.gs 
+            // (Code.gs mengirim: username & password, bukan user & pass)
+            const guruDitemukan = databaseGuru.find(g => 
+                g.username.toLowerCase() === inputUser.toLowerCase() && // Username tidak case-sensitive
+                String(g.password) === String(inputPass) // Password harus sama persis (case-sensitive)
             );
 
-            if (userDitemukan) {
-                // SUKSES LOGIN
-                localStorage.setItem('namaGuru', userDitemukan.nama);
-                localStorage.setItem('jabatanUser', userDitemukan.jabatan); 
-
-                // Efek visual sukses
-                btnLogin.innerHTML = "Login Berhasil...";
-                btnLogin.style.background = "linear-gradient(to right, #11998e, #38ef7d)";
-                errorMsg.style.display = 'none';
-
-                // Cek Jabatan untuk Redirect
-                let tujuanHalaman = 'dashboard.html'; // Default Guru
-                let jabatan = userDitemukan.jabatan ? String(userDitemukan.jabatan).toLowerCase() : "";
-
-                // Logika Kepsek
-                if (jabatan.includes("kepala sekolah") || jabatan.includes("kepsek")) {
-                    tujuanHalaman = 'dashboardkepsek.html';
-                } 
+            if (guruDitemukan) {
+                // SUKSES
+                localStorage.setItem('namaGuru', guruDitemukan.nama);
                 
-                console.log("Login User:", userDitemukan.nama, "| Role:", jabatan, "->", tujuanHalaman);
-
-                // Redirect
+                // Animasi tombol sukses
+                btnLogin.innerHTML = "Berhasil Masuk...";
+                btnLogin.style.background = "linear-gradient(to right, #11998e, #38ef7d)";
+                
+                // Redirect setelah 1 detik
                 setTimeout(() => {
-                    window.location.href = tujuanHalaman;
+                    window.location.href = 'dashboard.html';
                 }, 1000);
 
             } else {
-                // GAGAL LOGIN (Password salah)
+                // GAGAL
                 errorMsg.style.display = 'block';
                 document.querySelector('.login-container').style.animation = "shake 0.5s";
                 setTimeout(() => { document.querySelector('.login-container').style.animation = "none"; }, 500);
             }
         });
     </script>
-    </script>
 
 </body>
+
 </html>
 
