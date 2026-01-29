@@ -249,33 +249,70 @@
             }, 1000);
         }
 
-        // --- LOGIKA GANTI PASSWORD REAL (Validasi & Penyimpanan Lokal) ---
-        function savePasswordLogic() {
-            // 1. Ambil nilai dari input
-            const oldPass = document.getElementById('oldPass').value;
-            const newPass = document.getElementById('newPass').value;
-            const confPass = document.getElementById('confPass').value;
+        async function savePasswordLogic() {
+    const oldPass = document.getElementById('oldPass').value;
+    const newPass = document.getElementById('newPass').value;
+    const confPass = document.getElementById('confPass').value;
+    
+    // Ambil Nama Guru dari LocalStorage (diset saat login)
+    const namaGuru = localStorage.getItem('namaGuru');
 
-            // 2. Validasi (Security Check)
-            if (oldPass === "" || newPass === "" || confPass === "") {
-                alert("Gagal: Semua kolom wajib diisi!");
-                return;
-            }
+    // 1. Validasi Input Dasar
+    if (!oldPass || !newPass || !confPass) {
+        alert("Semua kolom harus diisi!");
+        return;
+    }
+    if (newPass.length < 6) {
+        alert("Password baru minimal 6 karakter!");
+        return;
+    }
+    if (newPass !== confPass) {
+        alert("Konfirmasi password tidak cocok!");
+        return;
+    }
 
-            if (newPass.length < 6) {
-                alert("Gagal: Password baru minimal harus 6 karakter!");
-                return;
-            }
+    // 2. Visual Loading
+    const btn = document.querySelector('#modalPassword .btn-cyan');
+    const originalText = btn.innerText;
+    btn.innerText = "Menghubungkan ke Database...";
+    btn.disabled = true;
 
-            if (newPass !== confPass) {
-                alert("Gagal: Konfirmasi password tidak cocok dengan password baru!");
-                return;
-            }
+    try {
+        // 3. Kirim data ke Google Apps Script (Fungsi doPost)
+        // URL diambil dari SCRIPT_URL yang ada di index.html (pastikan didefinisikan kembali di sini)
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxjOtLl18ZvhzJnvGYGBiOki7UmjjeinUdFecOtBVqYgY6BrgVvMXgZKHNRouSoJgA2ew/exec";
+        
+        // Gunakan URLSearchParams agar terbaca sebagai parameter oleh GS
+        const formData = new URLSearchParams();
+        formData.append('action', 'ubahPassword');
+        formData.append('nama', namaGuru);
+        formData.append('password', newPass);
 
-            if (oldPass === newPass) {
-                alert("Gagal: Password baru tidak boleh sama dengan password lama!");
-                return;
-            }
+        const response = await fetch(SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors', // Penting untuk menghindari blokir CORS Google Apps Script
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: formData
+        });
+
+        // Karena mode 'no-cors', kita tidak bisa membaca isi JSON respons secara langsung, 
+        // namun jika fetch berhasil sampai ke server, kita asumsikan sukses.
+        alert('PERMINTAAN TERKIRIM: Password sedang diperbarui di database. Silakan login ulang nanti untuk memastikan.');
+        
+        // Reset dan Tutup
+        document.getElementById('oldPass').value = '';
+        document.getElementById('newPass').value = '';
+        document.getElementById('confPass').value = '';
+        closeModal('modalPassword');
+
+    } catch (error) {
+        console.error("Error ganti password:", error);
+        alert("Gagal menghubungi server. Periksa koneksi internet Anda.");
+    } finally {
+        btn.innerText = originalText;
+        btn.disabled = false;
+    }
+}
 
             // 3. Simulasi Proses Penyimpanan ke Server (Database)
             // Karena ini file HTML standalone, kita gunakan LocalStorage browser sebagai pengganti database.
