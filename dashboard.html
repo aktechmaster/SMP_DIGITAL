@@ -928,30 +928,32 @@
 </div>
 
 <style>
-/* Gaya untuk Popup (Modal) */
+/* REVISI CSS: Z-INDEX 9999 AGAR MUNCUL PALING DEPAN */
 .modal-overlay {
   position: fixed;
-  z-index: 1000;
+  z-index: 9999 !important; /* PENTING: Agar menimpa popup lain */
   left: 0; top: 0;
   width: 100%; height: 100%;
-  background-color: rgba(0,0,0,0.5); /* Latar belakang gelap transparan */
-  display: flex;
+  background-color: rgba(0,0,0,0.6);
+  display: flex; /* Flexbox untuk tengah */
   justify-content: center;
   align-items: center;
+  backdrop-filter: blur(2px); /* Efek blur biar fokus */
 }
 
 .modal-box {
   background-color: #fff;
   width: 90%;
-  max-width: 600px; /* Agar tidak terlalu lebar di layar besar */
+  max-width: 600px;
   border-radius: 12px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
   overflow: hidden;
   animation: slideDown 0.3s ease-out;
+  position: relative; /* Agar z-index bekerja stabil */
 }
 
 .modal-header {
-  background-color: #3498db; /* Warna Biru Header */
+  background-color: #3498db;
   color: white;
   padding: 15px 20px;
   display: flex;
@@ -960,55 +962,28 @@
 }
 
 .close-btn {
-  font-size: 24px;
+  font-size: 28px;
   font-weight: bold;
   cursor: pointer;
+  color: #fff;
+  line-height: 1;
 }
+.close-btn:hover { color: #ffebee; }
 
 .modal-body-table {
-  padding: 10px;
-  max-height: 70vh; /* Agar bisa discroll jika siswanya banyak */
+  padding: 0;
+  max-height: 70vh;
   overflow-y: auto;
 }
 
-/* Gaya Tabel Keren */
-.tabel-keren {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 14px;
-}
-
-.tabel-keren th, .tabel-keren td {
-  padding: 10px;
-  border-bottom: 1px solid #ddd;
-  text-align: center;
-}
-
-.tabel-keren th {
-  background-color: #f8f9fa;
-  color: #333;
-  font-weight: bold;
-}
-
-/* Warna Persentase */
-.badge-merah {
-  background-color: #ffebee;
-  color: #c0392b;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-weight: bold;
-}
-
-.badge-hijau {
-  background-color: #e8f8f5;
-  color: #27ae60;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-weight: bold;
-}
+.tabel-keren { width: 100%; border-collapse: collapse; font-size: 14px; }
+.tabel-keren th { background-color: #f1f2f6; position: sticky; top: 0; z-index: 10; padding: 12px; text-align:center;}
+.tabel-keren td { padding: 10px; border-bottom: 1px solid #eee; text-align: center; }
+.badge-merah { background-color: #ffebee; color: #c0392b; padding: 4px 8px; border-radius: 4px; font-weight: bold; }
+.badge-hijau { background-color: #e8f8f5; color: #27ae60; padding: 4px 8px; border-radius: 4px; font-weight: bold; }
 
 @keyframes slideDown {
-  from {transform: translateY(-20px); opacity: 0;}
+  from {transform: translateY(-30px); opacity: 0;}
   to {transform: translateY(0); opacity: 1;}
 }
 </style>
@@ -1685,54 +1660,51 @@ function prosesUbahPassword() {
     });
 }
 
-        // === FUNGSI POPUP (VERSI AMAN) ===
+        // === FUNGSI POPUP ABSENSI (FINAL FIX) ===
 function bukaPopupAbsensi() {
     // 1. Ambil Nama Kelas
     var kelas = window.kelasAktif;
-    
-    // Jika kelas tidak terdeteksi, coba ambil dari label HTML
     if (!kelas) {
         try {
             var label = document.getElementById('label-rekap-kelas').textContent;
             kelas = label.replace("Rekap Kehadiran ", "").trim();
-        } catch (e) { console.log(e); }
+        } catch (e) {}
     }
 
-    if (!kelas) {
-        alert("Nama kelas belum terdeteksi. Silakan refresh halaman.");
-        return;
-    }
+    if (!kelas) { alert("Kelas tidak ditemukan. Refresh halaman."); return; }
 
-    // 2. SETTING URL SCRIPT (JANGAN LUPA TANDA KUTIP!)
-    // Ganti URL di bawah ini dengan URL Script Anda sendiri
-    // Pastikan URL tetap diapit oleh tanda kutip "..."
+    // 2. Tampilkan Popup (Dengan CSS Z-Index Baru)
+    var modal = document.getElementById('modalDetailAbsensi');
+    modal.style.display = 'flex'; // Pakai flex agar di tengah
+    document.getElementById('judulDetailKelas').innerText = "Detail: " + kelas;
+    var tbody = document.getElementById('isiTabelAbsensi');
+    tbody.innerHTML = '<tr><td colspan="6" style="padding:20px; text-align:center;">Sedang mengambil data... <br>⏳ Mohon tunggu...</td></tr>';
+
+    // 3. URL SCRIPT (PASTIKAN SUDAH DEPLOY NEW VERSION & AKSES ANYONE)
+    // TEMPEL URL ANDA DI BAWAH INI ANTARA DUA TANDA KUTIP:
     var urlTujuan = "https://script.google.com/macros/s/AKfycbzuguXclPQLd5v8qSz0xlVA_c4wWpqLoNloUO7bTa-jW6fv-h_-Cn236BwgbdwJjaL8/exec"; 
 
-    // 3. Tampilkan Popup
-    document.getElementById('modalDetailAbsensi').style.display = 'flex';
-    document.getElementById('judulDetailKelas').innerText = "Detail: " + kelas;
-    document.getElementById('isiTabelAbsensi').innerHTML = '<tr><td colspan="6" style="padding:20px;">Sedang memuat data... ⏳</td></tr>';
-
-    // 4. Ambil Data
-    fetch(urlTujuan + "?action=getRekapDetail&kelas=" + encodeURIComponent(kelas))
-    .then(response => response.json())
+    // 4. Fetch Data
+    var fullUrl = urlTujuan + "?action=getRekapDetail&kelas=" + encodeURIComponent(kelas);
+    
+    fetch(fullUrl)
+    .then(res => res.json())
     .then(data => {
         var html = '';
         if (!data || data.length === 0) {
-             html = '<tr><td colspan="6" style="padding:20px;">Data tidak ditemukan.</td></tr>';
+             html = '<tr><td colspan="6" style="padding:20px; text-align:center;">Data siswa kosong.</td></tr>';
         } else {
             data.forEach(siswa => {
-                // Konversi Persen
                 var strPersen = String(siswa.persen).replace('%','').replace(',','.');
                 var nilai = parseFloat(strPersen);
-                if (nilai <= 1 && nilai > 0) { nilai = nilai * 100; }
+                if (nilai <= 1 && nilai > 0) { nilai = nilai * 100; } // Handle desimal 0.5 -> 50%
                 if (isNaN(nilai)) nilai = 0;
 
                 var warna = (nilai < 80) ? 'badge-merah' : 'badge-hijau';
                 
                 html += `
                 <tr>
-                    <td style="text-align:left;">${siswa.nama}</td>
+                    <td style="text-align:left; font-weight:500;">${siswa.nama}</td>
                     <td>${siswa.h}</td>
                     <td>${siswa.s}</td>
                     <td>${siswa.i}</td>
@@ -1741,11 +1713,20 @@ function bukaPopupAbsensi() {
                 </tr>`;
             });
         }
-        document.getElementById('isiTabelAbsensi').innerHTML = html;
+        tbody.innerHTML = html;
     })
     .catch(error => {
-        document.getElementById('isiTabelAbsensi').innerHTML = '<tr><td colspan="6" style="color:red; padding:20px;">Gagal: ' + error + '</td></tr>';
+        console.error(error);
+        tbody.innerHTML = '<tr><td colspan="6" style="color:red; padding:20px; text-align:center;">' +
+            'Gagal mengambil data.<br><br>' + 
+            '<small>Tips: Pastikan Script sudah di-Deploy sebagai <b>"New Version"</b><br>' +
+            'dan Akses diatur ke <b>"Anyone (Siapa Saja)"</b>.</small></td></tr>';
     });
+}
+
+// Fungsi Tutup (Pastikan ini ada)
+function tutupDetailAbsensi() {
+    document.getElementById('modalDetailAbsensi').style.display = 'none';
 }
         
     </script>
@@ -1753,5 +1734,6 @@ function bukaPopupAbsensi() {
 </body>
 
 </html>
+
 
 
