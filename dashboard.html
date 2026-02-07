@@ -1685,80 +1685,66 @@ function prosesUbahPassword() {
     });
 }
 
-        // === FUNGSI POPUP (VERSI PERBAIKAN) ===
+        // === FUNGSI POPUP (VERSI AMAN) ===
 function bukaPopupAbsensi() {
-    // 1. CEK NAMA KELAS
-    var kelas = window.kelasAktif; 
+    // 1. Ambil Nama Kelas
+    var kelas = window.kelasAktif;
     
-    // Jika kelas kosong, kita coba ambil paksa dari teks label (Plan B)
+    // Jika kelas tidak terdeteksi, coba ambil dari label HTML
     if (!kelas) {
         try {
-            var labelText = document.getElementById('label-rekap-kelas').textContent;
-            // Teks biasanya "Rekap Kehadiran 8 BILINGUAL", kita ambil kata setelah "Kehadiran "
-            kelas = labelText.replace("Rekap Kehadiran ", "").trim();
-        } catch (e) {
-            console.log(e);
-        }
+            var label = document.getElementById('label-rekap-kelas').textContent;
+            kelas = label.replace("Rekap Kehadiran ", "").trim();
+        } catch (e) { console.log(e); }
     }
 
-    if (!kelas || kelas === "" || kelas === "undefined") {
-        alert("⚠️ EROR 1: Nama kelas tidak terbaca.\nPastikan Anda sudah menambahkan baris 'window.kelasAktif = kelasDitemukan;' di bagian KOTAK 6 tadi.");
+    if (!kelas) {
+        alert("Nama kelas belum terdeteksi. Silakan refresh halaman.");
         return;
     }
 
-    // 2. CEK URL SCRIPT (Penting!)
-    var urlTujuan = "https://script.google.com/macros/s/AKfycbzuguXclPQLd5v8qSz0xlVA_c4wWpqLoNloUO7bTa-jW6fv-h_-Cn236BwgbdwJjaL8/exec";
-    // Jika tidak, cek apakah namanya 'url'? (nama umum lain)
-    else if (typeof url !== 'undefined') { 
-        urlTujuan = url; 
-    }
-    // Jika masih tidak ketemu, minta User isi manual
-    else {
-        alert("⚠️ EROR 2: Alamat Script tidak ditemukan!\n\nDi dalam kode ini, ganti tulisan 'GANTI_DENGAN_LINK_WEB_APP_ANDA' dengan link https://script.google.com/.../exec punya Anda.");
-        return;
-    }
+    // 2. SETTING URL SCRIPT (JANGAN LUPA TANDA KUTIP!)
+    // Ganti URL di bawah ini dengan URL Script Anda sendiri
+    // Pastikan URL tetap diapit oleh tanda kutip "..."
+    var urlTujuan = "https://script.google.com/macros/s/AKfycbzuguXclPQLd5v8qSz0xlVA_c4wWpqLoNloUO7bTa-jW6fv-h_-Cn236BwgbdwJjaL8/exec"; 
 
-    // 3. MULAI PROSES
+    // 3. Tampilkan Popup
     document.getElementById('modalDetailAbsensi').style.display = 'flex';
     document.getElementById('judulDetailKelas').innerText = "Detail: " + kelas;
-    document.getElementById('isiTabelAbsensi').innerHTML = '<tr><td colspan="6" style="padding:20px;">Sedang mengambil data... ⏳<br><small>Menghubungi Database...</small></td></tr>';
+    document.getElementById('isiTabelAbsensi').innerHTML = '<tr><td colspan="6" style="padding:20px;">Sedang memuat data... ⏳</td></tr>';
 
-    var fullUrl = urlTujuan + "?action=getRekapDetail&kelas=" + encodeURIComponent(kelas);
-    console.log("Mengambil data dari: " + fullUrl);
-
-    fetch(fullUrl)
+    // 4. Ambil Data
+    fetch(urlTujuan + "?action=getRekapDetail&kelas=" + encodeURIComponent(kelas))
     .then(response => response.json())
     .then(data => {
         var html = '';
         if (!data || data.length === 0) {
-             html = '<tr><td colspan="6" style="padding:20px;">Belum ada data siswa untuk kelas ini.</td></tr>';
+             html = '<tr><td colspan="6" style="padding:20px;">Data tidak ditemukan.</td></tr>';
         } else {
             data.forEach(siswa => {
+                // Konversi Persen
                 var strPersen = String(siswa.persen).replace('%','').replace(',','.');
-                var nilaiPersen = parseFloat(strPersen);
-                if (nilaiPersen <= 1 && nilaiPersen > 0) { nilaiPersen = nilaiPersen * 100; }
+                var nilai = parseFloat(strPersen);
+                if (nilai <= 1 && nilai > 0) { nilai = nilai * 100; }
+                if (isNaN(nilai)) nilai = 0;
+
+                var warna = (nilai < 80) ? 'badge-merah' : 'badge-hijau';
                 
-                // Jika NaN (Error angka), anggap 0
-                if (isNaN(nilaiPersen)) nilaiPersen = 0;
-
-                var badgeClass = (nilaiPersen < 80) ? 'badge-merah' : 'badge-hijau';
-                var tampilPersen = Math.round(nilaiPersen) + "%";
-
                 html += `
                 <tr>
-                    <td style="text-align:left; font-weight:500;">${siswa.nama}</td>
+                    <td style="text-align:left;">${siswa.nama}</td>
                     <td>${siswa.h}</td>
                     <td>${siswa.s}</td>
                     <td>${siswa.i}</td>
                     <td>${siswa.a}</td>
-                    <td><span class="${badgeClass}">${tampilPersen}</span></td>
+                    <td><span class="${warna}">${Math.round(nilai)}%</span></td>
                 </tr>`;
             });
         }
         document.getElementById('isiTabelAbsensi').innerHTML = html;
     })
     .catch(error => {
-        document.getElementById('isiTabelAbsensi').innerHTML = '<tr><td colspan="6" style="color:red; padding:20px;">Gagal memuat data.<br>Cek koneksi internet atau Script URL.<br><small>' + error + '</small></td></tr>';
+        document.getElementById('isiTabelAbsensi').innerHTML = '<tr><td colspan="6" style="color:red; padding:20px;">Gagal: ' + error + '</td></tr>';
     });
 }
         
@@ -1767,4 +1753,5 @@ function bukaPopupAbsensi() {
 </body>
 
 </html>
+
 
