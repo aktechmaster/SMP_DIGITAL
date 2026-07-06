@@ -1282,13 +1282,18 @@ function updateHeaderDashboard() {
         // ============================================
         // FUNGSI BUKA LAPORAN (VERSI TERBARU - 6 POIN)
         // ============================================
-function bukaLaporan() {
-    // 1. Cek apakah data dari server sudah masuk
+async function bukaLaporan() {
+    // 1. Panggil data terbaru dari server terlebih dahulu
+    // fetchData() sudah punya loading screen bawaan Anda, jadi user tahu sistem sedang bekerja
+    await fetchData(); 
+
+    // 2. Cek keamanan (berjaga-jaga jika fetch gagal)
     if (!dataDariSpreadsheet) {
-        showPopup("Loading", "Data sedang dimuat... Tunggu sebentar.", "⏳");
+        showPopup("Gagal", "Gagal memuat data terbaru. Coba lagi.", "❌");
         return;
     }
 
+    // 3. Buka Modal Laporan
     const modal = document.getElementById("modalLaporan");
     modal.style.display = "block";
 
