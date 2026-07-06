@@ -1337,19 +1337,45 @@ function bukaLaporan() {
     }
 
     // --- BAGIAN 2: JURNAL BULANAN ---
-    const dataBulanan = dataDariSpreadsheet.jurnalBulanan[namaGuru];
-    if (dataBulanan) {
-        let target = parseInt(dataBulanan.target) || 0;
-        let realisasi = parseInt(dataBulanan.realisasi) || 0;
-        let persen = 0;
-        if (target > 0) persen = Math.round((realisasi / target) * 100);
+const dataBulanan = dataDariSpreadsheet.jurnalBulanan[namaGuru];
+if (dataBulanan) {
+    let target = parseInt(dataBulanan.target) || 0;
+    let realisasi = parseInt(dataBulanan.realisasi) || 0;
+    let persen = 0;
+    if (target > 0) persen = Math.round((realisasi / target) * 100);
 
-        document.getElementById("val-jurnal-bulanan").innerText = persen + "% (" + realisasi + "/" + target + ")";
-        document.getElementById("bar-jurnal-bulanan").style.width = persen + "%";
-    } else {
-        document.getElementById("val-jurnal-bulanan").innerText = "-";
-        document.getElementById("bar-jurnal-bulanan").style.width = "0%";
+    document.getElementById("val-jurnal-bulanan").innerText = persen + "% (" + realisasi + "/" + target + ")";
+    document.getElementById("bar-jurnal-bulanan").style.width = persen + "%";
+} else {
+    document.getElementById("val-jurnal-bulanan").innerText = "-";
+    document.getElementById("bar-jurnal-bulanan").style.width = "0%";
+}
+
+// =========================================================
+// CODES BARU: SUNTIK TOMBOL "LIHAT RINCIAN" SECARA DINAMIS
+// =========================================================
+const cardJurnal = document.getElementById("val-jurnal-bulanan").closest('.card-item');
+if (cardJurnal) {
+    // Kita cek dulu, kalau tombolnya belum ada, baru kita buat (biar gak duplikat saat di-refresh)
+    if (!cardJurnal.querySelector('.btn-rincian-jurnal')) {
+        const linkRincian = document.createElement('a');
+        linkRincian.className = 'btn-rincian-jurnal';
+        linkRincian.href = '#';
+        linkRincian.innerText = 'Lihat Rincian »';
+        
+        // Atur gaya tampilan tombol agar rapi
+        linkRincian.style.cssText = 'color: #3498db; text-decoration: none; font-size: 0.9em; display: inline-block; margin-top: 10px; font-weight: bold; cursor: pointer;';
+        
+        // Hubungkan fungsi kliknya ke popup rincian jurnal
+        linkRincian.onclick = function(e) {
+            e.preventDefault();
+            bukaRincianJurnal();
+        };
+        
+        // Masukkan tombol ke dalam kotak secara paksa
+        cardJurnal.appendChild(linkRincian);
     }
+}
 
     // --- BAGIAN 3: PIKET ---
     const dataPiket = dataDariSpreadsheet.piket[namaGuru];
