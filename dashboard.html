@@ -731,6 +731,7 @@
                     <div class="bar-fill" id="bar-jurnal-bulanan" style="width: 0%; background-color: #9b59b6;"></div>
                 </div>
                 <div class="item-footer">Data dari sheet "Jurnal fix"</div>
+                <a href="#" onclick="bukaRincianJurnal(); return false;" style="color: #3498db; text-decoration: none; font-size: 0.9em; display: inline-block; margin-top: 10px; font-weight: bold;">Lihat Rincian »</a>
             </div>
 
             <div class="card-item" id="card-status-input" style="display:none; border-left: 4px solid #1abc9c;">
@@ -903,6 +904,30 @@
             <button onclick="prosesUbahPassword()" class="btn-popup-ok" style="width: 100%; margin-top: 5px; padding: 12px; font-weight: bold;">
                 Simpan Password
             </button>
+        </div>
+    </div>
+</div>
+
+    <div id="modalRincianJurnal" class="modal" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(3px);">
+    <div class="modal-content" style="background-color: #fff; margin: 5% auto; padding: 25px; border-radius: 12px; width: 90%; max-width: 500px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); position: relative;">
+        <span onclick="tutupRincianJurnal()" style="color: #7f8c8d; position: absolute; right: 20px; top: 15px; font-size: 28px; font-weight: bold; cursor: pointer; transition: 0.3s;">&times;</span>
+        
+        <h3 style="margin-bottom: 5px; color: #2c3e50; font-size: 1.3em;">Rekap Bulanan Jurnal</h3>
+        <p id="nama-guru-jurnal" style="margin-bottom: 20px; color: #16a085; font-weight: 600; font-size: 0.95em;"></p>
+        
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; text-align: center; font-size: 0.9em;">
+                <thead>
+                    <tr style="background: linear-gradient(to right, #00c6ff, #0072ff); color: white;">
+                        <th style="padding: 12px 8px; border: 1px solid #ddd; border-top-left-radius: 8px;">Bulan</th>
+                        <th style="padding: 12px 8px; border: 1px solid #ddd;">Wajib Diisi</th>
+                        <th style="padding: 12px 8px; border: 1px solid #ddd;">Realisasi</th>
+                        <th style="padding: 12px 8px; border: 1px solid #ddd; border-top-right-radius: 8px;">Persen</th>
+                    </tr>
+                </thead>
+                <tbody id="tabel-body-jurnal">
+                    </tbody>
+            </table>
         </div>
     </div>
 </div>
@@ -1734,6 +1759,66 @@ function bukaPopupAbsensi() {
 function tutupDetailAbsensi() {
     document.getElementById('modalDetailAbsensi').style.display = 'none';
 }
+
+// ==========================================
+// FUNGSI RINCIAN JURNAL BULANAN
+// ==========================================
+function bukaRincianJurnal() {
+    // 1. Pastikan data sudah ditarik dari server
+    if (!dataDariSpreadsheet || !dataDariSpreadsheet.rincianJurnal) {
+        showPopup("Data Belum Siap", "Data rincian jurnal sedang dimuat atau belum tersedia.", "⏳");
+        return;
+    }
+
+    // 2. Ambil data spesifik untuk guru yang login
+    const dataRincian = dataDariSpreadsheet.rincianJurnal[namaGuru];
+    const tbody = document.getElementById("tabel-body-jurnal");
+    
+    // 3. Reset isi tabel dan tulis nama guru
+    tbody.innerHTML = ""; 
+    document.getElementById("nama-guru-jurnal").innerText = namaGuru;
+
+    // 4. Jika datanya ada, susun baris tabelnya
+    if (dataRincian && dataRincian.length > 0) {
+        dataRincian.forEach((item, index) => {
+            // Efek belang-belang pada baris tabel agar mudah dibaca
+            const bgRow = index % 2 === 0 ? "#f9f9f9" : "#ffffff";
+            
+            // Logika warna untuk kolom persen
+            let angkaPersen = parseFloat(item.persen.replace(',', '.'));
+            let warnaPersen = (angkaPersen >= 100) ? "#27ae60" : (angkaPersen > 0 ? "#e67e22" : "#e74c3c");
+
+            const tr = document.createElement("tr");
+            tr.style.backgroundColor = bgRow;
+            
+            tr.innerHTML = `
+                <td style="padding: 10px 8px; border: 1px solid #ddd; font-weight: 500;">${item.bulan}</td>
+                <td style="padding: 10px 8px; border: 1px solid #ddd;">${item.wajib}</td>
+                <td style="padding: 10px 8px; border: 1px solid #ddd;">${item.realisasi}</td>
+                <td style="padding: 10px 8px; border: 1px solid #ddd; color: ${warnaPersen}; font-weight: bold;">${item.persen}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    } else {
+        // Jika belum ada data sama sekali
+        tbody.innerHTML = "<tr><td colspan='4' style='padding: 20px; color: #7f8c8d;'>Belum ada data jurnal untuk ditampilkan.</td></tr>";
+    }
+
+    // 5. Tampilkan pop-up modalnya
+    document.getElementById("modalRincianJurnal").style.display = "block";
+}
+
+function tutupRincianJurnal() {
+    document.getElementById("modalRincianJurnal").style.display = "none";
+}
+
+// Opsional: Tutup modal saat klik area luar (gelap)
+window.addEventListener('click', function(event) {
+    const modalRincian = document.getElementById("modalRincianJurnal");
+    if (event.target === modalRincian) {
+        tutupRincianJurnal();
+    }
+});
         
     </script>
 
