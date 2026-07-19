@@ -488,6 +488,18 @@
                 <img id="dash-foto" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Foto Profil" class="profile-img">
             </div>
 
+            <!-- Letakkan ini di bawah elemen <img id="dash-foto"> -->
+<div style="margin-top: 10px; text-align: center;">
+    <!-- Input file disembunyikan -->
+    <input type="file" id="inputFotoProfil" accept="image/*" style="display: none;" onchange="prosesUploadFoto()">
+    
+    <!-- Tombol yang akan memicu input file -->
+    <button onclick="document.getElementById('inputFotoProfil').click()" class="btn-upload">Ubah Foto</button>
+    
+    <!-- Teks status -->
+    <small id="statusUploadFoto" style="display: block; color: gray; margin-top: 5px;"></small>
+</div>
+
             <div class="welcome-content">
                 <h1 class="welcome-title">Selamat Datang,</h1>
                 <h1 id="nama-guru" class="guru-name">Loading...</h1>
@@ -1163,7 +1175,7 @@ function updateHeaderDashboard() {
         return;
     }
     
-    // 2. Definisi Variabel 'bio' (Hanya hidup di dalam fungsi ini)
+    // 2. Definisi Variabel 'bio'
     const bio = dataDariSpreadsheet.biodata[namaGuru];
     
     let teksJabatan = bio.jabatan || "-";
@@ -1192,6 +1204,89 @@ function updateHeaderDashboard() {
     } else {
         imgElement.src = defaultFoto;
     }
+} // <--- INI ADALAH PENUTUP FUNGSI updateHeaderDashboard YANG SEBELUMNYA HILANG
+
+// ==========================================
+// FUNGSI UPLOAD FOTO BARU
+// ==========================================
+function prosesUploadFoto() {
+    const fileInput = document.getElementById('inputFotoProfil');
+    const statusText = document.getElementById('statusUploadFoto');
+    
+    if (fileInput.files.length === 0) return; // Batal pilih file
+    
+    const file = fileInput.files[0];
+    
+    // Batasi ukuran file (Maksimal 2MB untuk mencegah loading lama/gagal)
+    if (file.size > 2 * 1024 * 1024) {
+        alert("Ukuran foto terlalu besar! Maksimal 2MB.");
+        fileInput.value = ""; // Reset input
+        return;
+    }
+
+    statusText.innerText = "Mengupload foto... Mohon tunggu.";
+    
+    const reader = new FileReader();
+    
+    // Ketika file selesai dibaca oleh browser
+    reader.onload = function(e) {
+        const dataURI = e.target.result; // Data Base64
+
+        // Siapkan formulir pengiriman data
+        const formData = new URLSearchParams();
+        formData.append('action', 'uploadFoto');
+        formData.append('nama', namaGuru); // Pastikan variabel namaGuru tersedia
+        formData.append('dataURI', dataURI);
+        formData.append('mimeType', file.type);
+        formData.append('fileName', namaGuru + " - " + file.name); 
+
+        // Kirim ke backend (GAS)
+        // PERHATIAN: Pastikan "URL_WEB_APP" di bawah ini sama dengan nama variabel URL milikmu (misal: scriptURL)
+        fetch(URL_WEB_APP, { 
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.status === 'sukses') {
+                statusText.innerText = "Upload Berhasil!";
+                
+                // Langsung update foto di tampilan tanpa perlu refresh halaman
+                updateTampilanFoto(result.url);
+                
+                alert("Foto profil berhasil diperbarui!");
+            } else {
+                statusText.innerText = "Gagal: " + result.pesan;
+            }
+        })
+        .catch(error => {
+            statusText.innerText = "Terjadi kesalahan jaringan.";
+            console.error("Error upload:", error);
+        });
+    };
+
+    // Mulai membaca file
+    reader.readAsDataURL(file);
+}
+
+// ==========================================
+// FUNGSI HELPER TAMPILAN FOTO
+// ==========================================
+function updateTampilanFoto(rawLink) {
+    const imgElement = document.getElementById('dash-foto');
+    if (!rawLink || rawLink.trim() === "") return;
+
+    if (rawLink.includes("drive.google.com")) {
+        const idMatch = rawLink.match(/\/d\/([a-zA-Z0-9_-]+)/) || rawLink.match(/id=([a-zA-Z0-9_-]+)/);
+        if (idMatch && idMatch[1]) {
+            imgElement.src = "https://drive.google.com/thumbnail?sz=w1000&id=" + idMatch[1];
+        } else {
+            imgElement.src = rawLink; 
+        }
+    } else {
+        imgElement.src = rawLink; 
+    }
+}
 
     // ==========================================
     // --- LOGIKA MENU KHUSUS WAKA ---
