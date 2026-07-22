@@ -553,6 +553,14 @@
         <p>Lihat semua rekap & laporan terpusat</p>
     </div>
 
+            <div id="menu-ekstra-kurikuler" class="menu-card" style="display: none; text-align: center;" onclick="window.open('https://aktechmaster.github.io/Jurnal-Ekstra-Kurikuler-SMP/')">
+                <div class="icon-container" style="background: #fff3e0; color: #ff9800; margin: 0 auto 10px auto;">
+                    <i class="fas fa-futbol"></i>
+                </div>
+                <h3>⚽ Jurnal Ekstra</h3>
+                <p>Khusus Pembina Ekstra.</p>
+            </div>
+
 
             <div id="menu-absensi-karyawan" class="menu-card" style="display: none; text-align: center;" onclick="window.open('https://aktechmaster.github.io/SMP_Jurnal-Absensi-Karyawan/')">
                 <div class="icon-container" style="background: #e0f2f1; color: #009688; margin: 0 auto 10px auto;">
@@ -1299,6 +1307,21 @@ function updateHeaderDashboard() {
 
 } // <--- KURUNG KURAWAL PENUTUP FUNGSI UTAMA (JANGAN DIHAPUS, INI BATAS AKHIR)
 
+        // ==========================================
+    // --- LOGIKA OTOMATIS MENU JURNAL EKSTRA ---
+    // ==========================================
+    const tombolEkstra = document.getElementById('menu-ekstra-kurikuler');
+    
+    // Pastikan tombol ada DAN data pembinaEkstra terbaca dari sheet Biodata
+    if (tombolEkstra && bio.pembinaEkstra) {
+        // Cek apakah isinya "Iya" (trim spasi & huruf kecilkan biar aman)
+        if (bio.pembinaEkstra.toString().trim().toLowerCase() === "iya") {
+            tombolEkstra.style.display = "inline-block"; // Gunakan inline-block, block, atau flex sesuai desain grid menu Anda
+        } else {
+            // Jika kosong atau bukan "Iya", sembunyikan
+            tombolEkstra.style.display = "none"; 
+        }
+    }
 
         // ==========================================
         // LOGIKA CEK AKSES ABSENSI
