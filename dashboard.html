@@ -1148,6 +1148,32 @@ function closeInfoPopup() {
                 
                 updateHeaderDashboard();
 
+                // ==========================================
+                // --- LOGIKA OTOMATIS MENU JURNAL EKSTRA ---
+                // ==========================================
+                const tombolEkstra = document.getElementById('menu-ekstra-kurikuler');
+                
+                if (tombolEkstra && dataDariSpreadsheet && dataDariSpreadsheet.biodata) {
+                    // 1. Cari data biodata guru yang sedang login
+                    let bioUser = dataDariSpreadsheet.biodata[namaGuru];
+                    
+                    // Jika nama di localStorage sedikit beda dengan di Excel, cari yang mirip
+                    if (!bioUser) {
+                        const allKeys = Object.keys(dataDariSpreadsheet.biodata);
+                        const matchedKey = allKeys.find(k => k.toLowerCase().includes(namaGuru.toLowerCase()) || namaGuru.toLowerCase().includes(k.toLowerCase()));
+                        if (matchedKey) bioUser = dataDariSpreadsheet.biodata[matchedKey];
+                    }
+
+                    console.log("Data Biodata Guru Login:", bioUser);
+
+                    // 2. Tampilkan/Sembunyikan Menu
+                    if (bioUser && bioUser.pembinaEkstra && bioUser.pembinaEkstra.toString().trim().toLowerCase() === "iya") {
+                        tombolEkstra.style.display = 'flex'; // Gunakan 'flex' atau 'block'
+                    } else {
+                        tombolEkstra.style.display = 'none';
+                    }
+                }
+
             } catch (error) {
                 console.error("Gagal mengambil data:", error);
                 alert("Gagal terhubung ke Database. Cek koneksi internet.");
@@ -1307,37 +1333,6 @@ function updateHeaderDashboard() {
 
 } // <--- KURUNG KURAWAL PENUTUP FUNGSI UTAMA (JANGAN DIHAPUS, INI BATAS AKHIR)
 
-        // ==========================================
-// --- LOGIKA OTOMATIS MENU JURNAL EKSTRA ---
-// ==========================================
-const tombolEkstra = document.getElementById('menu-ekstra-kurikuler');
-
-// 1. Ambil nama guru yang sedang login (sesuaikan jika Anda menyimpan nama di localStorage/sessionStorage)
-const namaUser = sessionStorage.getItem('nama') || localStorage.getItem('nama') || "Jompi Ikwan, S.Pd., Gr"; 
-
-// 2. Cari data biodata khusus milik guru yang sedang login
-let bioUser = null;
-
-if (dataDariSpreadsheet && dataDariSpreadsheet.biodata) {
-    // Cari key nama guru yang cocok di dalam object biodata
-    const daftarNama = Object.keys(dataDariSpreadsheet.biodata);
-    const keyCocok = daftarNama.find(nama => nama.includes(namaUser) || namaUser.includes(nama));
-    
-    if (keyCocok) {
-        bioUser = dataDariSpreadsheet.biodata[keyCocok];
-    }
-}
-
-console.log("Data Bio Guru Login:", bioUser); // Untuk cek di console
-
-// 3. Tampilkan atau sembunyikan menu
-if (tombolEkstra && bioUser) {
-    if (bioUser.pembinaEkstra && bioUser.pembinaEkstra.toString().trim().toLowerCase() === "iya") {
-        tombolEkstra.style.display = "flex"; 
-    } else {
-        tombolEkstra.style.display = "none"; 
-    }
-}
         // ==========================================
         // LOGIKA CEK AKSES ABSENSI
         // ==========================================
