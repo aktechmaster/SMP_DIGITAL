@@ -1308,20 +1308,22 @@ function updateHeaderDashboard() {
 } // <--- KURUNG KURAWAL PENUTUP FUNGSI UTAMA (JANGAN DIHAPUS, INI BATAS AKHIR)
 
         // ==========================================
-    // --- LOGIKA OTOMATIS MENU JURNAL EKSTRA ---
-    // ==========================================
-    const tombolEkstra = document.getElementById('menu-ekstra-kurikuler');
-    
-    // 1. Pastikan elemen HTML tombolnya ada
-    if (tombolEkstra) {
-        // 2. Cek apakah bio.pembinaEkstra ada isinya DAN bernilai "Iya"
-        if (bio.pembinaEkstra && bio.pembinaEkstra.toString().trim().toLowerCase() === "iya") {
-            // Gunakan "flex" atau "block" (samakan dengan menu BPI Anda)
-            tombolEkstra.style.display = "flex"; 
-        } else {
-            tombolEkstra.style.display = "none"; 
-        }
+// --- LOGIKA OTOMATIS MENU JURNAL EKSTRA ---
+// ==========================================
+const tombolEkstra = document.getElementById('menu-ekstra-kurikuler');
+
+// 1. Ambil objek bio dari variabel dataDariSpreadsheet yang sudah didefinisikan
+const bioData = dataDariSpreadsheet ? (dataDariSpreadsheet.bio || dataDariSpreadsheet.biodata) : null;
+
+// 2. Pastikan tombol ada DAN data bioData berhasil dibaca
+if (tombolEkstra && bioData) {
+    // 3. Cek apakah pembinaEkstra nilainya "Iya"
+    if (bioData.pembinaEkstra && bioData.pembinaEkstra.toString().trim().toLowerCase() === "iya") {
+        tombolEkstra.style.display = "flex"; 
+    } else {
+        tombolEkstra.style.display = "none"; 
     }
+}
 
         // ==========================================
         // LOGIKA CEK AKSES ABSENSI
