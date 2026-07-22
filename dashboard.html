@@ -1312,13 +1312,13 @@ function updateHeaderDashboard() {
     // ==========================================
     const tombolEkstra = document.getElementById('menu-ekstra-kurikuler');
     
-    // Pastikan tombol ada DAN data pembinaEkstra terbaca dari sheet Biodata
-    if (tombolEkstra && bio.pembinaEkstra) {
-        // Cek apakah isinya "Iya" (trim spasi & huruf kecilkan biar aman)
-        if (bio.pembinaEkstra.toString().trim().toLowerCase() === "iya") {
-            tombolEkstra.style.display = "inline-block"; // Gunakan inline-block, block, atau flex sesuai desain grid menu Anda
+    // 1. Pastikan elemen HTML tombolnya ada
+    if (tombolEkstra) {
+        // 2. Cek apakah bio.pembinaEkstra ada isinya DAN bernilai "Iya"
+        if (bio.pembinaEkstra && bio.pembinaEkstra.toString().trim().toLowerCase() === "iya") {
+            // Gunakan "flex" atau "block" (samakan dengan menu BPI Anda)
+            tombolEkstra.style.display = "flex"; 
         } else {
-            // Jika kosong atau bukan "Iya", sembunyikan
             tombolEkstra.style.display = "none"; 
         }
     }
