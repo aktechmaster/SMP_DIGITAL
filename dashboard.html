@@ -1312,19 +1312,32 @@ function updateHeaderDashboard() {
 // ==========================================
 const tombolEkstra = document.getElementById('menu-ekstra-kurikuler');
 
-// 1. Ambil objek bio dari variabel dataDariSpreadsheet yang sudah didefinisikan
-const bioData = dataDariSpreadsheet ? (dataDariSpreadsheet.bio || dataDariSpreadsheet.biodata) : null;
+// 1. Ambil nama guru yang sedang login (sesuaikan jika Anda menyimpan nama di localStorage/sessionStorage)
+const namaUser = sessionStorage.getItem('nama') || localStorage.getItem('nama') || "Jompi Ikwan, S.Pd., Gr"; 
 
-// 2. Pastikan tombol ada DAN data bioData berhasil dibaca
-if (tombolEkstra && bioData) {
-    // 3. Cek apakah pembinaEkstra nilainya "Iya"
-    if (bioData.pembinaEkstra && bioData.pembinaEkstra.toString().trim().toLowerCase() === "iya") {
+// 2. Cari data biodata khusus milik guru yang sedang login
+let bioUser = null;
+
+if (dataDariSpreadsheet && dataDariSpreadsheet.biodata) {
+    // Cari key nama guru yang cocok di dalam object biodata
+    const daftarNama = Object.keys(dataDariSpreadsheet.biodata);
+    const keyCocok = daftarNama.find(nama => nama.includes(namaUser) || namaUser.includes(nama));
+    
+    if (keyCocok) {
+        bioUser = dataDariSpreadsheet.biodata[keyCocok];
+    }
+}
+
+console.log("Data Bio Guru Login:", bioUser); // Untuk cek di console
+
+// 3. Tampilkan atau sembunyikan menu
+if (tombolEkstra && bioUser) {
+    if (bioUser.pembinaEkstra && bioUser.pembinaEkstra.toString().trim().toLowerCase() === "iya") {
         tombolEkstra.style.display = "flex"; 
     } else {
         tombolEkstra.style.display = "none"; 
     }
 }
-
         // ==========================================
         // LOGIKA CEK AKSES ABSENSI
         // ==========================================
